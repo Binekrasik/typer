@@ -1,0 +1,96 @@
+@import '../../../../values.scss';
+
+@keyframes errorAnimation {
+    from {
+        opacity: 0;
+        transform: translateY( 10px );
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateY( -10px );
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY( -10px );
+    }
+}
+
+.Typer {
+    padding: 100px;
+
+    .Info {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .Progress {
+            margin: 0;
+            font-size: 22px;
+            
+            color: $colorMain;
+        }
+
+        // Chromium & WebKit
+        progress {
+            background: none;
+
+            height: 20px;
+            width: 10%;
+
+            border: none;
+        }
+
+        progress[ value ]::-webkit-progress-bar {
+            background: color-mix( in srgb, rgba( $colorMain, .1 ) 75%, rgba( $colorForeground, .25 ) 25% );
+        }
+
+        progress[ value ]::-webkit-progress-value {
+            background: $colorMain;
+            transition: $easingSmooth 2s;
+        }
+
+        // Firefox
+        progress[ value ]::-moz-progress-bar {
+            background: $colorMain;
+            transition: $easingSmooth 2s;
+        }
+    }
+
+    .caret {
+        transition: $easingSmooth .4s;
+        transform: translateY( -0.2rem ) translateX( -0.08rem );
+
+        background: $colorMain;
+        backdrop-filter: blur( 10px );
+
+        position: absolute;
+    }
+
+    .text {
+        line-height: 120%;
+
+        .character {
+            transition: $easingSmooth .4s;
+
+            color: color-mix( in srgb, rgba( $colorMain, .1 ) 75%, rgba( $colorForeground, .25 ) 25% );
+        }
+    
+        .character-typed {
+            color: $colorMain;
+            transform: translateY( 0 );
+        }
+    
+        .character-current {
+            color: rgba( $colorMain, .3 );
+        }
+
+        .character-error {
+            color: rgba( $colorError, .75 );
+            position: absolute;
+
+            animation: 2s $easingSmooth errorAnimation;
+        }
+    }
+}
