@@ -74,7 +74,7 @@
         .character {
             transition: $easingSmooth .4s;
 
-            color: color-mix( in srgb, rgba( $colorMain, .1 ) 75%, rgba( $colorForeground, .25 ) 25% );
+            color: color-mix( in srgb, rgba( $colorMain, .15 ) 75%, rgba( $colorForeground, .4 ) 25% );
         }
     
         .character-typed {
