@@ -1,3 +1,4 @@
+import { motion } from 'motion/react'
 import './Typer.scss'
 import { useCallback, useEffect, useState } from 'react'
 
@@ -6,7 +7,7 @@ type CaretType = 'underline' | 'bar'
 let caretInitialized = false
 let charactersTotal = 0
 
-const Typer = ( { text }: { text: string } ) => {
+const Typer = ( { text, resetTest }: { text: string, resetTest: () => void } ) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const words = new Array< string >
 
@@ -90,7 +91,23 @@ const Typer = ( { text }: { text: string } ) => {
     const createWordsArray = ( array: Array< string > ) => new Array< string >().concat( ...array.map( n => [ n, ' ' ] ) ).slice( 0, -1 )
 
     return (
-        <div className='Typer'>
+        <motion.div
+            initial={{
+                y: 50,
+                opacity: 0
+            }}
+
+            animate={{
+                y: 0,
+                opacity: 1,
+                transition: {
+                    duration: 1,
+                    ease: [ .2, 1, 0, 1 ]
+                }
+            }}
+
+            className='Typer'
+        >
             <div className='Info' >
                 <p className='Progress' >{ `${ currentIndex.total } / ${ charactersTotal } - ${ Math.round( currentIndex.total / charactersTotal * 100 ) }%` }</p>
 
@@ -140,7 +157,11 @@ const Typer = ( { text }: { text: string } ) => {
                     })
                 }
             </p>
-        </div>
+
+            <div className='options'>
+                <button onClick={ resetTest } >New test</button>
+            </div>
+        </motion.div>
     )
 }
 

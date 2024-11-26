@@ -1,0 +1,21 @@
+@import 'src/values.scss';
+
+.App {
+    .waitContainer {
+        width: 100vw;
+        height: 100vh;
+
+        position: absolute;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .waitPrompt {
+            margin: 0;
+            font-size: 1.5rem;
+    
+            color: $colorMain;
+        }
+    }
+}

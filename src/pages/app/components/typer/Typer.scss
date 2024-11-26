@@ -1,4 +1,4 @@
-@import '../../../../values.scss';
+@import 'src/values.scss';
 
 @keyframes errorAnimation {
     from {
@@ -91,6 +91,46 @@
             position: absolute;
 
             animation: 2s $easingSmooth errorAnimation;
+        }
+    }
+
+    .options {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 20px;
+
+        button {
+            background: transparent;
+            color: $colorMain;
+
+            transition: .4s $easingSmooth;
+
+            border: 2px solid rgba( $colorMain, .25 );
+
+            font-size: 22px;
+            margin: 0;
+            padding: 10px 20px;
+            color: rgba( $colorMain, .25 );
+
+            &:hover {
+                background: rgba( $colorMain, .1 );
+                color: rgba( $colorMain, .5 );
+            }
+
+            &:focus {
+                color: rgba( $colorMain, .5 );
+                border-color: rgba( $colorMain, .5 );
+
+                outline: none;
+            }
+
+            &:focus, &:active {
+                color: rgba( $colorMain, .5 );
+            }
+
+            &:active {
+                background: rgba( $colorMain, .05 );
+            }
         }
     }
 }
