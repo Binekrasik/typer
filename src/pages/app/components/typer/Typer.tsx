@@ -7,7 +7,7 @@ type CaretType = 'underline' | 'bar'
 let caretInitialized = false
 let charactersTotal = 0
 
-const Typer = ( { text, resetTest }: { text: string, resetTest: () => void } ) => {
+const Typer = ( { text, resetTest, aiGenerated }: { text: string, resetTest: () => void, aiGenerated: boolean } ) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const words = new Array< string >
 
@@ -33,14 +33,14 @@ const Typer = ( { text, resetTest }: { text: string, resetTest: () => void } ) =
         }
     }, [ currentIndex, caretType ] )
 
-    const createErrorCharacter = useCallback( ( span: HTMLSpanElement, event: KeyboardEvent ) => {
+    const createErrorCharacter = useCallback( ( span: HTMLSpanElement, character: string ) => {
         const textContainer = document.querySelector( '.text' ) as HTMLParagraphElement
         const spanElement = document.createElement( 'span' )
 
         document.querySelectorAll( '.character-error' ).forEach( element => element.remove() )
 
         spanElement.className = `character-error`
-        spanElement.innerText = event.key
+        spanElement.innerText = character
 
         spanElement.style.left = `${ span.offsetLeft }px`
         spanElement.style.top = `${ span.offsetTop - span.offsetHeight / 2 }px`
@@ -49,10 +49,26 @@ const Typer = ( { text, resetTest }: { text: string, resetTest: () => void } ) =
         textContainer.appendChild( spanElement )
 
         setTimeout( () => spanElement.remove(), 2000 )
+
+        // alert( "Chyba vole" )
     }, [ ] )
 
     const keypressHandler = useCallback( ( event: KeyboardEvent ) => {
         event.preventDefault()
+        let character: string
+
+        switch ( event.key ) {
+            case 'Enter':
+                character = '↵'
+                break
+
+            case ' ':
+                character = '⎵'
+                break
+            
+            default:
+                character = event.key
+        }
 
         if ( words[ currentIndex.word ][ currentIndex.character ] == event.key ) {
             updateCaret()
@@ -62,7 +78,7 @@ const Typer = ( { text, resetTest }: { text: string, resetTest: () => void } ) =
             } else setCurrentIndex( { word: currentIndex.word, character: currentIndex.character + 1, total: currentIndex.total + 1 } )
         } else {
             const span = document.querySelector( `#typer-character-${ currentIndex.total + 1 }` ) as HTMLSpanElement
-            createErrorCharacter( span, event )
+            createErrorCharacter( span, character )
         }
     }, [ words, currentIndex, updateCaret, createErrorCharacter ] )
 
@@ -157,6 +173,8 @@ const Typer = ( { text, resetTest }: { text: string, resetTest: () => void } ) =
                     })
                 }
             </p>
+
+            { aiGenerated ? <p>AI generated</p> : '' }
 
             <div className='options'>
                 <button onClick={ resetTest } >New test</button>

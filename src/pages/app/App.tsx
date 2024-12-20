@@ -17,14 +17,14 @@ const App = () => {
 
     const newTest = () => {
         if ( apiKey.current != '' ) {
-            const keyPrompt = prompt( 'Api key (leave empty for writing randomly assembled text from the dictionary)' )
+            const keyPrompt = '' // prompt( 'Api key (leave empty for writing randomly assembled text from the dictionary)' )
             apiKey.current = prompt == null ? '' : keyPrompt
         }
 
         if ( apiKey.current == '' || !apiKey.current ) {
             const words = new Array< string >
 
-            for ( let i = 0; i < 10; i++ )
+            for ( let i = 0; i < 100; i++ )
                 words.push( dictionary[ Math.floor( Math.random() * dictionary.length ) + 1 ] )
 
             setText( words.join( ' ' ) )
@@ -53,7 +53,7 @@ const App = () => {
                         >
                             Please wait
                         </motion.p>
-                    </div> : <Typer text={ text } resetTest={ () => location.reload() } />
+                    </div> : <Typer text={ text } resetTest={ () => location.reload() } aiGenerated={ apiKey.current != '' && apiKey.current != null } />
             }
         </div>
     )
