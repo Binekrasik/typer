@@ -7,19 +7,28 @@ type CaretType = 'underline' | 'bar'
 let caretInitialized = false
 let charactersTotal = 0
 
-const Typer = ( { text, resetTest, aiGenerated }: { text: string, resetTest: () => void, aiGenerated: boolean } ) => {
+const Typer = (
+    { text, resetTest }: {
+        text: string,
+        resetTest: () => void
+    }
+) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const words = new Array< string >
 
     const [ currentIndex, setCurrentIndex ] = useState( { word: 0, character: 0, total: 0 } )
     const [ caretProperties, setCaretProperties ] = useState( { x: 0, y: 0, width: -1, height: -1 } )
 
+    // caret type
     const caretType: CaretType = 'underline'
 
     let tempCharactersCounter = 0
 
+    // updates the caret and its position
     const updateCaret = useCallback( () => {
+        // current character
         const span = document.querySelector( `#typer-character-${ currentIndex.total + 1 }` ) as HTMLSpanElement
+        // next character
         const nextSpan = document.querySelector( `#typer-character-${ currentIndex.total + 2 }` ) as HTMLSpanElement
 
         switch ( caretType as CaretType ) {
@@ -49,8 +58,6 @@ const Typer = ( { text, resetTest, aiGenerated }: { text: string, resetTest: () 
         textContainer.appendChild( spanElement )
 
         setTimeout( () => spanElement.remove(), 2000 )
-
-        // alert( "Chyba vole" )
     }, [ ] )
 
     const keypressHandler = useCallback( ( event: KeyboardEvent ) => {
@@ -112,7 +119,6 @@ const Typer = ( { text, resetTest, aiGenerated }: { text: string, resetTest: () 
                 y: 50,
                 opacity: 0
             }}
-
             animate={{
                 y: 0,
                 opacity: 1,
@@ -121,12 +127,10 @@ const Typer = ( { text, resetTest, aiGenerated }: { text: string, resetTest: () 
                     ease: [ .2, 1, 0, 1 ]
                 }
             }}
-
             className='Typer'
         >
             <div className='Info' >
                 <p className='Progress' >{ `${ currentIndex.total } / ${ charactersTotal } - ${ Math.round( currentIndex.total / charactersTotal * 100 ) }%` }</p>
-
                 <progress value={ currentIndex.total } max={ charactersTotal } />
             </div>
 
@@ -173,8 +177,6 @@ const Typer = ( { text, resetTest, aiGenerated }: { text: string, resetTest: () 
                     })
                 }
             </p>
-
-            { aiGenerated ? <p>AI generated</p> : '' }
 
             <div className='options'>
                 <button onClick={ resetTest } >New test</button>
