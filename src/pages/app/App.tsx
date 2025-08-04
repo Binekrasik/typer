@@ -1,16 +1,17 @@
 import './App.scss'
 
 import Typer from './components/typer/Typer'
-import dictEnglish from '../../resources/dictionary/english/basic.json'
+import { userSettings } from "../../resources/userSettings.ts";
+import { dictRegistry } from "../../resources/dictionary/registry.ts";
 
-const dictionary = dictEnglish as Array< string >
+const dictionary = dictRegistry[ userSettings.test.dictionary ]
 
 const App = () => {
     const newTest = () => {
         const words = new Array< string >
 
         for ( let i = 0; i < 100; i++ )
-            words.push( dictionary[ Math.floor( Math.random() * dictionary.length ) + 1 ] )
+            words.push( dictionary[ Math.floor( Math.random() * dictionary.length ) ] )
 
         return words.join( ' ' )
     }
