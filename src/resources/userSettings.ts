@@ -1,6 +1,6 @@
 export const userSettings = {
     test: {
-        length: 10,
+        length: 20,
         dictionary: 'english',
     },
 }

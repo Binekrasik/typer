@@ -1,8 +1,8 @@
 import './App.scss'
 
 import Typer from './components/typer/Typer'
-import { userSettings } from "../../resources/userSettings.ts";
-import { dictRegistry } from "../../resources/dictionary/registry.ts";
+import { userSettings } from '../../resources/userSettings.ts'
+import { dictRegistry } from '../../resources/dictionary/registry.ts'
 
 const dictionary = dictRegistry[ userSettings.test.dictionary ]
 

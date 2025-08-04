@@ -66,7 +66,12 @@ const Typer = (
 
         switch ( event.key ) {
             case 'Enter':
+                // tab + enter test reset functionality
+                if ( document.activeElement?.id == 'resetTestButton' )
+                    resetTest()
+
                 character = '↵'
+
                 break
 
             case ' ':
@@ -87,7 +92,7 @@ const Typer = (
             const span = document.querySelector( `#typer-character-${ currentIndex.total + 1 }` ) as HTMLSpanElement
             createErrorCharacter( span, character )
         }
-    }, [ words, currentIndex, updateCaret, createErrorCharacter ] )
+    }, [ words, currentIndex.word, currentIndex.character, currentIndex.total, resetTest, updateCaret, createErrorCharacter ] )
 
     useEffect( () => {
         document.addEventListener( 'keypress', keypressHandler )
@@ -179,7 +184,7 @@ const Typer = (
             </p>
 
             <div className='options'>
-                <button onClick={ resetTest } >New test</button>
+                <button id={ 'resetTestButton' } onClick={ resetTest } >New test</button>
             </div>
         </motion.div>
     )
