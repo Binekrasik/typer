@@ -7,5 +7,6 @@ a simple, beautiful and unstable typing experience.
 
 ## running
 
-first of all, install the dependencies by running `bun install`.
-after that, you can simply run `bun dev` or `bun run dev` and visit http://localhost:3000.
+1. install the dependencies by running `bun i`.
+
+2. run `bun dev` or `bun run dev` and visit http://localhost:3000.
