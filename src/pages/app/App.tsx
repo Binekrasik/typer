@@ -10,7 +10,7 @@ const App = () => {
     const newTest = () => {
         const words = new Array< string >
 
-        for ( let i = 0; i < 100; i++ )
+        for ( let i = 0; i < userSettings.test.length; i++ )
             words.push( dictionary[ Math.floor( Math.random() * dictionary.length ) ] )
 
         return words.join( ' ' )
