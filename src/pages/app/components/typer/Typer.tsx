@@ -16,13 +16,15 @@ const Typer = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const words = new Array< string >
 
-    const [ currentIndex, setCurrentIndex ] = useState( { word: 0, character: 0, total: 0 } )
-    const [ caretProperties, setCaretProperties ] = useState( { x: 0, y: 0, width: -1, height: -1 } )
+    // test state
+    const [ currentIndex, setCurrentIndex ] = useState({ word: 0, character: 0, total: 0 })
+    const [ caretProperties, setCaretProperties ] = useState({ x: 0, y: 0, width: -1, height: -1 })
+
+    // temporary variables used for test generation
+    let tempCharactersCounter = 0
 
     // caret type
     const caretType: CaretType = 'underline'
-
-    let tempCharactersCounter = 0
 
     // updates the caret and its position
     const updateCaret = useCallback( () => {
@@ -42,6 +44,25 @@ const Typer = (
         }
     }, [ currentIndex, caretType ] )
 
+    const syncCaret = useCallback( () => {
+        // current character
+        const span = document.querySelector( `#typer-character-${ currentIndex.total }` ) as HTMLSpanElement
+        // next character
+        const nextSpan = document.querySelector( `#typer-character-${ currentIndex.total }` ) as HTMLSpanElement
+
+        if ( !span || !nextSpan ) return
+
+        switch ( caretType as CaretType ) {
+            case 'bar':
+                setCaretProperties( { x: span.offsetLeft + span.offsetWidth, y: span.offsetTop, width: -1, height: span.offsetHeight } )
+                break
+
+            case 'underline':
+                setCaretProperties( { x: span.offsetLeft + span.offsetWidth, y: span.offsetTop + span.offsetHeight - 5, width: nextSpan ? nextSpan.offsetWidth : span.offsetWidth, height: -1 } )
+                break
+        }
+    }, [ currentIndex, caretType ])
+
     const createErrorCharacter = useCallback( ( span: HTMLSpanElement, character: string ) => {
         const textContainer = document.querySelector( '.text' ) as HTMLParagraphElement
         const spanElement = document.createElement( 'span' )
@@ -60,6 +81,12 @@ const Typer = (
         setTimeout( () => spanElement.remove(), 2000 )
     }, [ ] )
 
+    const doResetTest = useCallback( () => {
+        resetTest()
+
+        syncCaret()
+    }, [ resetTest, syncCaret ] )
+
     const keypressHandler = useCallback( ( event: KeyboardEvent ) => {
         event.preventDefault()
         let character: string
@@ -67,8 +94,17 @@ const Typer = (
         switch ( event.key ) {
             case 'Enter':
                 // tab + enter test reset functionality
-                if ( document.activeElement?.id == 'resetTestButton' )
-                    resetTest()
+                if ( document.activeElement?.id == 'resetTestButton' ) {
+                    setCurrentIndex({ word: 0, character: 0, total: 0 })
+                    setCaretProperties({ x: 0, y: 0, width: -1, height: -1 })
+
+                    doResetTest()
+
+                    const resetButton = document.activeElement as HTMLButtonElement
+                    resetButton.blur()
+
+                    return
+                }
 
                 character = '↵'
 
@@ -76,6 +112,7 @@ const Typer = (
 
             case ' ':
                 character = '⎵'
+
                 break
             
             default:
@@ -92,7 +129,7 @@ const Typer = (
             const span = document.querySelector( `#typer-character-${ currentIndex.total + 1 }` ) as HTMLSpanElement
             createErrorCharacter( span, character )
         }
-    }, [ words, currentIndex.word, currentIndex.character, currentIndex.total, resetTest, updateCaret, createErrorCharacter ] )
+    }, [ words, currentIndex.word, currentIndex.character, currentIndex.total, doResetTest, updateCaret, createErrorCharacter ] )
 
     useEffect( () => {
         document.addEventListener( 'keypress', keypressHandler )
@@ -114,7 +151,7 @@ const Typer = (
         }
         
         return () => document.removeEventListener( 'keypress', keypressHandler )
-    }, [ currentIndex.total, keypressHandler ] )
+    }, [ currentIndex.total, keypressHandler, syncCaret ] )
 
     const createWordsArray = ( array: Array< string > ) => new Array< string >().concat( ...array.map( n => [ n, ' ' ] ) ).slice( 0, -1 )
 
