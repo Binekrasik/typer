@@ -4,16 +4,27 @@ import { InputManager } from './lib/managers/InputManager.ts'
 import { TestManager } from './lib/managers/TestManager.ts'
 import { arrayIncludesAny } from './lib/utils/arrayIncludesAny.ts'
 
+/* const updateValueIndicator = () =>
+    progressValueIndicator.innerText = `${ progressManager.getValue() } / ${ progressManager.getMaxValue() }` */
+
 const progressManager = new ProgressBarManager()
 const inputManager = new InputManager()
 const testManager = new TestManager()
 
-testManager.regenerateTest( 20 )
+const wordCount = 15
+
+// initialize test
+testManager.regenerateTest( wordCount )
+progressManager.setMaxValue( testManager.getTestLength() )
+
+// const progressValueIndicator = document.querySelector( '#testProgressValue' ) as HTMLHeadingElement
+// updateValueIndicator()
 
 inputManager.addListener( 'character', character => {
-    progressManager.increaseValue( 5 )
+    // updateValueIndicator()
 
-    testManager.typeCharacter( character )
+    if ( testManager.typeCharacter( character ) )
+        progressManager.increaseValue( 1 )
 })
 
 inputManager.addListener( 'meta', key => {
@@ -24,7 +35,8 @@ inputManager.addListener( 'meta', key => {
         && arrayIncludesAny( inputManager.activeModifierKeys, [ 'ControlLeft', 'ControlRight' ] )
         && arrayIncludesAny( inputManager.activeModifierKeys, [ 'ShiftLeft', 'ShiftRight' ] )
     ) {
-        testManager.regenerateTest( 20 )
+        testManager.regenerateTest( wordCount )
+        progressManager.setMaxValue( testManager.getTestLength() )
         progressManager.resetProgressBar()
     }
 })

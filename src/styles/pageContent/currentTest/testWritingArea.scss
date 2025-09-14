@@ -5,22 +5,23 @@
     #testWritingArea {
         display: flex;
         flex-wrap: wrap;
-        gap: 5px;
+        gap: 25px;
 
         max-width: 1000px;
 
         span {
-            font-weight: 500;
-            font-size: 1.5rem;
+            line-height: 100%;
+            font-weight: 400;
+            font-size: 3rem;
 
             transition: color .5s easings.$easeSmooth;
 
             &[ data-state="untyped" ] {
-                color: rgba( colors.$foreground, .4 );
+                color: rgba( colors.$primary, .25 );
             }
 
             &[ data-state="highlighted" ] {
-                color: rgba( colors.$foreground, .75 );
+                color: rgba( colors.$primary, .6 );
                 // text-decoration: underline;
             }
 

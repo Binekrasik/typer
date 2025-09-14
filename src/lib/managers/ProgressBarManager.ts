@@ -1,5 +1,6 @@
 export class ProgressBarManager {
-    public readonly barElement: HTMLDivElement
+    readonly barElement: HTMLDivElement
+    #maxValue: number = 100
     #value: number = 0
 
     constructor () {
@@ -18,22 +19,31 @@ export class ProgressBarManager {
         this.syncProgressBar()
     }
 
-    syncProgressBar = () => this.barElement.style.width = `${ this.#value }%`
+    syncProgressBar = () => this.barElement.style.width = `${ ( this.#value / this.#maxValue ) * 100 }%`
 
     getValue = () => this.#value
 
     setValue ( value: number ) {
-        if ( value > 100 || value < 0 )
-            throw new TypeError( 'Progress bar value shouldn\'t be beyond the range of 0 to 100%.' )
+        if ( value > this.#maxValue || value < 0 )
+            throw new TypeError( `Progress bar value shouldn't be beyond the range of 0 - ${ this.#maxValue }.` )
 
         this.#value = value
 
         this.syncProgressBar()
     }
 
+    setMaxValue ( maxValue: number ) {
+        this.#maxValue = maxValue
+
+        // clamp the current value
+        this.#value = this.#value > maxValue ? maxValue : this.#value
+    }
+
+    getMaxValue = () => this.#maxValue
+
     increaseValue ( amount: number ) {
         // scary math!
-        this.#value += this.#value + amount > 100 ? -( this.#value - ( amount + ( 100 - this.#value ) ) ) : amount
+        this.#value += this.#value + amount > this.#maxValue ? 0 : amount
 
         this.syncProgressBar()
     }

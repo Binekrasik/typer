@@ -17,18 +17,21 @@ export class TestManager {
         },
     }
 
-    #writingArea: HTMLDivElement
     #dictionary: Dictionary
+
+    // variables modified by test generation
+    #writingArea: HTMLDivElement
     #testState: TestState = TestManager.#emptyTestState
     #words: Array< WordEntity > = []
     #testLength: number = 0
 
     constructor () {
-        const element = document.querySelector( '#testWritingArea' )
-        if ( !element )
-            throw Error( 'Expected HTMLDivElement from query for "#testProgressBar.progressValue", got null instead.' )
+        // find the writing area
+        const areaElement = document.querySelector( '#testWritingArea' )
+        if ( !areaElement )
+            throw Error( 'Expected HTMLDivElement from query for "#testWritingArea", got null instead.' )
 
-        this.#writingArea = element as HTMLDivElement
+        this.#writingArea = areaElement as HTMLDivElement
 
         // hardcoded default dictionary for now
         this.#dictionary = new EnglishBritish()
@@ -39,6 +42,7 @@ export class TestManager {
         this.#writingArea.innerHTML = ''
         this.#testState = TestManager.#emptyTestState
         this.#words = []
+        this.#testLength = 0
     }
 
     regenerateTest ( wordCount: number ) {
@@ -66,6 +70,8 @@ export class TestManager {
 
         this.#writingArea.innerHTML += `<div class="word" id="currentTest-word-${ word.index }">${ html.join( '' ) }</div>`
         this.#words[ word.index ] = word
+
+        this.#testLength += word.length + ( word.index != 0 ? 1 : 0 )
     }
 
     appendRandomWords ( amount: number ) {
@@ -106,26 +112,18 @@ export class TestManager {
             && this.#testState.current.character.index === this.#testState.current.word.length - 1
         ) return // fail gracefully
 
-        /* console.debug( this.#testState.current.word.index )
-        console.debug( this.#testState.current.character.index )
-        console.debug( this.#testState.current.word.length ) */
-
-        /* if ( this.#testState.current.character.index === this.#testState.current.word.length - 1 ) {
-            this.#testState.current.word.index++
-            this.#testState.current.word.length = this.#words[ this.#testState.current.word.index ].length
-            this.#testState.current.character.index = 0
-        } else {
-            this.#testState.current.character.index++
-        } */
-
-        if ( this.#testState.current.character.index === this.#testState.current.word.length - 1 )
-            return
-
         this.#testState.current.character.index++
+
+        if ( this.didReachWordEnd() )
+            return
 
         this.#testState.current.character.symbol = this.getCurrentCharacterSymbol()
         this.highlightCurrentCharacter()
     }
+
+    didReachWordEnd = () =>
+        this.#testState.current.character.index === this.#testState.current.word.length
+        && !this.#words[ this.#testState.current.word.index ].getSymbol( this.#testState.current.character.index )
 
     typeCharacter ( input: string ): boolean {
         if ( this.#testState.current.character.symbol === input ) {
@@ -141,8 +139,10 @@ export class TestManager {
             return true
         }
 
-        if ( input === ' ' )
+        if ( input === ' ' && this.didReachWordEnd() ) {
             this.advanceCurrentWord()
+            return true
+        }
 
         return false
     }

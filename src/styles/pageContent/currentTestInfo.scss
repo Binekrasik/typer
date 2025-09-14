@@ -4,23 +4,19 @@
 #app {
     #pageContent {
         #currentTestInfo {
-            .testName {
-                font-size: 20px;
-                font-family: 'Parkinsans', Helvetica, 'Instrument Sans', sans-serif;
-
-                margin-bottom: 1rem;
-            }
-
             #testProgressBar {
+                margin-bottom: 1.75rem;
+
                 height: 20px;
                 width: 10vw;
-                background: rgba( colors.$primary, .1 );
+
+                background: rgba( colors.$primary, .25 );
 
                 .progressValue {
                     width: 50%;
                     height: 100%;
-                    background: colors.$primary;
 
+                    background: colors.$primary;
                     transition: width .5s easings.$easeSmooth;
                 }
             }

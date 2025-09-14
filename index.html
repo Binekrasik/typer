@@ -5,6 +5,10 @@
     <link rel="icon" type="image/svg+xml" href="/icon.svg"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>typer</title>
+
+    <style>
+        body { background-color: #000; }
+    </style>
 </head>
 <body>
     <noscript>
@@ -45,14 +49,13 @@
     <div id="app">
         <div id="pageContent">
             <div id="currentTestInfo">
-                <h2 class="testName">test #1 / nah idk bwo</h2>
-
                 <div id="testProgressBar">
                     <div class="progressValue"></div>
                 </div>
             </div>
 
             <div class="currentTest">
+                <div id="testCaret"></div>
                 <div id="testWritingArea"></div>
             </div>
         </div>

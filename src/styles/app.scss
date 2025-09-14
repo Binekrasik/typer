@@ -1,21 +1,33 @@
 @forward 'pageContent/pageContent';
 @forward 'userSelection';
+@forward 'values/fonts';
 
 @use 'values/colors' as colors;
+@use 'values/easings' as easings;
 
 * {
     box-sizing: border-box;
-}
-
-body {
-    background: colors.$background;
-    color: colors.$foreground;
-
-    margin: 0;
 }
 
 h1, h2, h3, h4, p {
     font-weight: 500;
     margin: 0;
     line-height: 100%;
+}
+
+body {
+    background: colors.$background;
+    color: colors.$foreground;
+
+    font-family: 'Parkinsans', Helvetica, sans-serif;
+
+    margin: 0;
+}
+
+#app {
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
