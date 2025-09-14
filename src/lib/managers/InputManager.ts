@@ -2,7 +2,7 @@ import type { Layout } from '../layouts/Layout.ts'
 import { CzechQwertz } from '../layouts/CzechQwertz.ts'
 
 type InputListenerType = 'character' | 'meta'
-type InputListenerExec = ( character: string | null ) => void
+type InputListenerExec = ( character: string ) => void
 
 interface InputListener {
     type: InputListenerType
@@ -46,7 +46,7 @@ export class InputManager {
         this.#internalKeypressListener = event => {
             // check if the key is a modifier
             if ( this.#activeLayout.isModifier( event.code ) ) {
-                console.log( `pressed modifier ${ event.code }` )
+                // console.debug( `pressed modifier ${ event.code }` )
                 this.activeModifierKeys.push( event.code )
 
                 event.preventDefault()
@@ -76,9 +76,10 @@ export class InputManager {
                     })
             }
         }
+
         this.#internalKeyreleaseListener = event => {
             if ( this.#activeLayout.isModifier( event.code ) ) {
-                console.log( `released modifier ${ event.code }` )
+                // console.debug( `released modifier ${ event.code }` )
                 const index = this.activeModifierKeys.indexOf( event.code )
 
                 // remove the modifier key as it is no longer pressed

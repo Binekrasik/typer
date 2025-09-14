@@ -518,7 +518,7 @@ export class CzechQwertz extends Layout {
     matchCharacter ( code: string, modifiers?: Array< string > ) {
         const char = characters[ code ]
         const modified = char && modifiers ? char.modified( modifiers.join( ' ' ) ) : null
-        console.debug( `${ code } -> ${ char ? modified ? modified : char.regular : null }\nmodifiers: ${ modifiers?.join( ' ' ) }` )
+        // console.debug( `${ code } -> ${ char ? modified ? modified : char.regular : null }\nmodifiers: ${ modifiers?.join( ' ' ) }` )
 
         return char ? modified ? modified : char.regular : null
     }

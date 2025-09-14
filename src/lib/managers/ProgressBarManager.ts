@@ -6,11 +6,16 @@ export class ProgressBarManager {
         // check if the progress bar element actually exists
         const barElement = document.querySelector( '.progressValue' )
         if ( !barElement )
-            throw Error( 'Expected HTMLDivElement from query for "#testProgressBar.progressValue", got null.' )
+            throw Error( 'Expected HTMLDivElement from query for "#testProgressBar.progressValue", got null instead.' )
 
         this.barElement = barElement as HTMLDivElement
 
         this.setValue( this.#value )
+    }
+
+    resetProgressBar () {
+        this.#value = 0
+        this.syncProgressBar()
     }
 
     syncProgressBar = () => this.barElement.style.width = `${ this.#value }%`
@@ -32,5 +37,6 @@ export class ProgressBarManager {
 
         this.syncProgressBar()
     }
+
     decreaseValue = ( amount: number ) => this.increaseValue( -amount )
 }
