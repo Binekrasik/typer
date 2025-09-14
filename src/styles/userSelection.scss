@@ -1,0 +1,6 @@
+@use 'values/colors' as colors;
+
+::selection {
+    background: colors.$foreground;
+    color: colors.$background;
+}

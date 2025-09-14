@@ -1,0 +1,29 @@
+@use '../values/easings' as easings;
+@use '../values/colors' as colors;
+
+#app {
+    #pageContent {
+        #currentTestInfo {
+            .testName {
+                font-size: 20px;
+                font-family: 'Parkinsans', Helvetica, 'Instrument Sans', sans-serif;
+
+                margin-bottom: 1rem;
+            }
+
+            #testProgressBar {
+                height: 20px;
+                width: 10vw;
+                background: rgba( colors.$primary, .1 );
+
+                .progressValue {
+                    width: 50%;
+                    height: 100%;
+                    background: colors.$primary;
+
+                    transition: width .5s easings.$easeSmooth;
+                }
+            }
+        }
+    }
+}

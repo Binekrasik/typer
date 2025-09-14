@@ -1,0 +1,22 @@
+@forward 'pageContent/currentTestInfo';
+@forward 'pageContent/pageContent';
+@forward 'userSelection';
+
+@use 'values/colors' as colors;
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: colors.$background;
+    color: colors.$foreground;
+
+    margin: 0;
+}
+
+h1, h2, h3, h4, p {
+    font-weight: 500;
+    margin: 0;
+    line-height: 100%;
+}
