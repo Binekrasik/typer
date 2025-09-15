@@ -17,7 +17,7 @@ const testManager = new TestManager()
 const scoreManager = new ScoreManager( progressManager, TestDifficultyEntries.average )
 new DifficultySelectionManager( scoreManager )
 
-const wordCount = 5
+const wordCount = 20
 
 const resetTest = () => {
     console.debug( 'resetting test' )
