@@ -1,5 +1,6 @@
-import type { Layout } from '../layouts/Layout.ts'
-import { CzechQwertz } from '../layouts/CzechQwertz.ts'
+import type { Layout } from '../tests/layouts/Layout.ts'
+import { CzechQwertz } from '../tests/layouts/CzechQwertz.ts'
+import { arrayYoink } from '../utils/arrays.ts'
 
 type InputListenerType = 'character' | 'meta'
 type InputListenerExec = ( character: string ) => void
@@ -22,6 +23,7 @@ export class InputManager {
         this.#activeLayout = layout ? layout : new CzechQwertz()
         this.createInternalHooks()
     }
+
     destroy () {
         this.destroyHooks()
     }
@@ -44,11 +46,8 @@ export class InputManager {
         ) this.destroyHooks()
 
         this.#internalKeypressListener = event => {
-            // check if the key is a modifier
             if ( this.#activeLayout.isModifier( event.code ) ) {
-                // console.debug( `pressed modifier ${ event.code }` )
                 this.activeModifierKeys.push( event.code )
-
                 event.preventDefault()
             } else {
                 // call meta key listeners
@@ -79,7 +78,6 @@ export class InputManager {
 
         this.#internalKeyreleaseListener = event => {
             if ( this.#activeLayout.isModifier( event.code ) ) {
-                // console.debug( `released modifier ${ event.code }` )
                 const index = this.activeModifierKeys.indexOf( event.code )
 
                 // remove the modifier key as it is no longer pressed
@@ -88,6 +86,7 @@ export class InputManager {
             }
         }
 
+        // register internal events
         document.addEventListener( 'keydown', this.#internalKeypressListener )
         document.addEventListener( 'keyup', this.#internalKeyreleaseListener )
     }
@@ -101,11 +100,7 @@ export class InputManager {
     })
 
     removeListener ( listener: InputListener ) {
-        const index = this.#listeners.indexOf( listener )
-        if ( index === -1 )
-            throw TypeError( 'Couldn\'t remove an event listener that is not registered.' )
-
-        this.#listeners.splice( index, 1 )
+        arrayYoink( this.#listeners, listener )
     }
 
     setLayout = ( layout: Layout ) => this.#activeLayout = layout

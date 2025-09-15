@@ -1,3 +1,5 @@
+// MONKEYTYPE ON TOP
+// many thanks for the dataset :>
 export const words25k = {
     name: 'British English 25k',
     words: [
