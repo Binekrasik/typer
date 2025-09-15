@@ -19,12 +19,6 @@ export class ScoreManager {
     setDifficulty ( difficulty: TestDifficulty ) {
         this.#difficulty = difficulty
         this.debugScoreProperties()
-
-        if ( this.#penalizer != -1 ) {
-            // update penalizer as well
-            this.stopPenalizer()
-            this.startPenalizer()
-        }
     }
 
     getIncorrectCharacterPenalty = () => this.#difficulty.incorrectCharacterPenalty
