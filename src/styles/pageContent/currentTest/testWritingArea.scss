@@ -1,0 +1,33 @@
+@use '../../values/colors' as colors;
+@use '../../values/easings' as easings;
+
+#app {
+    #testWritingArea {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 25px;
+
+        max-width: 1000px;
+
+        span {
+            line-height: 100%;
+            font-weight: 400;
+            font-size: 3rem;
+
+            transition: color .5s easings.$easeSmooth;
+
+            &[ data-state="untyped" ] {
+                color: rgba( colors.$primary, .25 );
+            }
+
+            &[ data-state="highlighted" ] {
+                color: rgba( colors.$primary, .6 );
+                // text-decoration: underline;
+            }
+
+            &[ data-state="typed" ] {
+                color: colors.$primary;
+            }
+        }
+    }
+}

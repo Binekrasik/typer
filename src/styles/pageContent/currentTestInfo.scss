@@ -1,0 +1,25 @@
+@use '../values/easings' as easings;
+@use '../values/colors' as colors;
+
+#app {
+    #pageContent {
+        #currentTestInfo {
+            #testProgressBar {
+                margin-bottom: 1.75rem;
+
+                height: 20px;
+                width: 10vw;
+
+                background: rgba( colors.$primary, .25 );
+
+                .progressValue {
+                    width: 50%;
+                    height: 100%;
+
+                    background: colors.$primary;
+                    transition: width .5s easings.$easeSmooth;
+                }
+            }
+        }
+    }
+}

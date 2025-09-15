@@ -1,0 +1,32 @@
+@use '../values/colors' as colors;
+@use '../values/easings' as easings;
+
+#testOptions {
+    margin-bottom: 1rem;
+    #testDifficultySelection {
+        display: flex;
+        gap: 1rem;
+
+        .difficultyOption {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+
+            font-size: 24px;
+            font-weight: 500;
+
+            color: rgba( colors.$primary, .25 );
+
+            transition: color easings.$easeSmooth .5s ;
+
+            &:hover {
+                color: rgba( colors.$primary, .75 );
+                cursor: default;
+            }
+
+            &[ data-selected="true" ] {
+                color: rgba( colors.$primary, 1 )
+            }
+        }
+    }
+}

@@ -1,0 +1,15 @@
+@forward 'testOptions';
+@forward 'currentTest/testWritingArea';
+@forward 'currentTestInfo';
+
+#app {
+    #pageContent {
+        padding: 2rem;
+
+        display: flex;
+        flex-direction: column;
+
+        height: fit-content;
+        width: fit-content;
+    }
+}
