@@ -1,0 +1,23 @@
+@use '../../values/easings' as easings;
+@use '../../values/colors' as colors;
+
+#testResetNotice {
+    display: flex;
+    justify-content: center;
+
+    margin-top: 3rem;
+    font-size: 18px;
+    font-weight: 500;
+
+    color: rgba( colors.$foreground, .25 );
+
+    transition: opacity .5s easings.$easeSmooth;
+
+    span {
+        color: rgba( colors.$primary, .5 );
+    }
+
+    &[ data-visible="false" ] {
+        opacity: 0;
+    }
+}

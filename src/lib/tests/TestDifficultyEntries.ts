@@ -26,6 +26,14 @@ export const TestDifficultyEntries: {
         penaltyMultiplier: 0.25,
         incorrectCharacterPenalty: 20,
     },
+    [ 'exceptional' ]: {
+        id: 'exceptional',
+        name: 'exceptional',
+        maxDelta: 120,
+        penalizationIntervalDelay: 60,
+        penaltyMultiplier: 0.75,
+        incorrectCharacterPenalty: 30,
+    },
     [ 'thock' ]: {
         id: 'thock',
         name: 'thock',
