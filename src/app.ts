@@ -15,7 +15,7 @@ const progressManager = new ProgressBarManager()
 const inputManager = new InputManager()
 const testManager = new TestManager()
 const scoreManager = new ScoreManager( progressManager, TestDifficultyEntries.average )
-const difficultySelectionManager = new DifficultySelectionManager( scoreManager )
+new DifficultySelectionManager( scoreManager )
 
 const wordCount = 20
 
