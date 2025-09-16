@@ -1,0 +1,15 @@
+@use '../../values/colors' as colors;
+@use '../../values/easings' as easings;
+
+#testCaret {
+    background: colors.$primary;
+
+    position: absolute;
+    top: 500px;
+    left: 500px;
+
+    height: 1mm;
+    width: 40px;
+
+    transition: all .5s easings.$easeSmooth;
+}

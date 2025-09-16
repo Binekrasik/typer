@@ -43,6 +43,8 @@ export class TestManager {
     #dictionary: Dictionary
     #listeners: Array< TestEventListener > = []
 
+    #caretElement: HTMLDivElement
+
     // variables modified by test generation
     #writingArea: HTMLDivElement
     #testState: TestState = TestManager.#emptyTestState
@@ -53,9 +55,16 @@ export class TestManager {
         // find the writing area
         const areaElement = document.querySelector( '#testWritingArea' )
         if ( !areaElement )
-            throw Error( 'Expected HTMLDivElement from query for "#testWritingArea", got null instead.' )
+            throw Error( 'Expected HTMLDivElement from query for "#testWritingArea", got nothing instead.' )
 
         this.#writingArea = areaElement as HTMLDivElement
+
+        // find the caret element
+        const caretElement = document.querySelector( '#testCaret' )
+        if ( !caretElement )
+            throw Error( 'Expected HTMLDivElement from query for "#testCaret", got nothing instead.' )
+
+        this.#caretElement = caretElement as HTMLDivElement
 
         // hardcoded default dictionary for now
         this.#dictionary = new EnglishBritish()
@@ -132,6 +141,10 @@ export class TestManager {
 
     appendWord ( word: WordEntity ): number {
         const html = word.toSpanArray()
+
+        if ( word.index > 0 )
+            this.#writingArea.innerHTML += `<span>&nbsp</span>`
+
         this.#writingArea.innerHTML += `<div class="word" id="currentTest-word-${ word.index }">${ html.join( '' ) }</div>`
         this.#words[ word.index ] = word
 
@@ -168,6 +181,20 @@ export class TestManager {
 
         const span = unchecked as HTMLSpanElement
         span.setAttribute( 'data-state', 'highlighted' )
+
+        this.syncCaret( index )
+    }
+
+    syncCaret ( index: { word: number, character: number } ) {
+        const unchecked = document.querySelector( `#currentTest-word-${ index.word }-letter-${ index.character }` )
+        if ( !unchecked )
+            throw Error( `Character with word index ${ index.word } and character index ${ index.character } doesn't exist.` )
+
+        const span = unchecked as HTMLSpanElement
+
+        this.#caretElement.style.width = `${ span.offsetWidth }px`
+        this.#caretElement.style.left = `${ span.offsetLeft }px`
+        this.#caretElement.style.top = `${ span.offsetTop + span.offsetHeight - 3 }px`
     }
 
     advanceCurrentWord () {

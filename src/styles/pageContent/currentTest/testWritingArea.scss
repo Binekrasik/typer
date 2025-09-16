@@ -5,9 +5,9 @@
     #testWritingArea {
         display: flex;
         flex-wrap: wrap;
-        gap: 25px;
+        row-gap: 25px;
 
-        max-width: 1000px;
+        width: 50vw;
 
         span {
             line-height: 100%;
