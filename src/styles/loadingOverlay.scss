@@ -1,0 +1,50 @@
+@use './values/easings' as easings;
+
+@keyframes indicatorSpinner {
+    0% {
+        transform: rotateZ( 0deg );
+    }
+
+    100% {
+        transform: rotateZ( 360deg );
+    }
+}
+
+@keyframes overlayFade {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        z-index: -10000000;
+    }
+}
+
+#loaderOverlay {
+    z-index: 3;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    backdrop-filter: blur( 20px);
+
+    transition: all 1s easings.$easeSmooth;
+
+    img {
+        animation: 2.5s easings.$easeAnticipate infinite indicatorSpinner;
+    }
+
+    &[ data-loading='false' ] {
+        animation: 1s easings.$easeSmooth overlayFade;
+        animation-fill-mode: forwards;
+    }
+}

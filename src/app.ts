@@ -19,6 +19,11 @@ new DifficultySelectionManager( scoreManager )
 
 const wordCount = 20
 
+const removeLoadingOverlay = () => {
+    const loadingOverlay = document.querySelector( '#loaderOverlay' ) as HTMLDivElement
+    loadingOverlay.setAttribute( 'data-loading', 'false' )
+}
+
 const resetTest = () => {
     console.debug( 'resetting test' )
 
@@ -27,12 +32,16 @@ const resetTest = () => {
     progressManager.reset()
     progressManager.setMaxValue( testManager.getTestLength() )
 
+    removeLoadingOverlay()
+
     scoreManager.debugScoreProperties()
 }
 
 // initialize test
 console.group( 'Test initialization' )
-resetTest()
+window.onload = () => {
+    resetTest()
+}
 console.groupEnd()
 
 inputManager.addListener( 'character', character => {

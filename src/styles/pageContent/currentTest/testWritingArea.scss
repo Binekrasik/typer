@@ -16,16 +16,16 @@
 
             transition: color .5s easings.$easeSmooth;
 
-            &[ data-state="untyped" ] {
+            &[ data-state='untyped' ] {
                 color: rgba( colors.$primary, .25 );
             }
 
-            &[ data-state="highlighted" ] {
+            &[ data-state='highlighted' ] {
                 color: rgba( colors.$primary, .6 );
                 // text-decoration: underline;
             }
 
-            &[ data-state="typed" ] {
+            &[ data-state='typed' ] {
                 color: colors.$primary;
             }
         }

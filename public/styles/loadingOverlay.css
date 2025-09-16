@@ -1,0 +1,37 @@
+@keyframes indicatorSpinner {
+  0% {
+    transform: rotateZ(0deg);
+  }
+  100% {
+    transform: rotateZ(360deg);
+  }
+}
+@keyframes overlayFade {
+  0% {
+    opacity: 1;
+    display: flex;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+#loaderOverlay {
+  z-index: 3;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(20px);
+  transition: all 1s cubic-bezier(0.2, 1, 0, 1);
+}
+#loaderOverlay img {
+  animation: 2.5s cubic-bezier(0.5, 0, 0, 0.8) infinite indicatorSpinner;
+}
+#loaderOverlay[data-loading=false] {
+  animation: 1s cubic-bezier(0.2, 1, 0, 1) overlayFade;
+  animation-fill-mode: forwards;
+}

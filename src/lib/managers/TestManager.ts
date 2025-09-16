@@ -140,12 +140,10 @@ export class TestManager {
     }
 
     appendWord ( word: WordEntity ): number {
-        const html = word.toSpanArray()
+        let html = word.toSpanArray().join( '' )
+        html += `<span>&nbsp</span>`
 
-        if ( word.index > 0 )
-            this.#writingArea.innerHTML += `<span>&nbsp</span>`
-
-        this.#writingArea.innerHTML += `<div class="word" id="currentTest-word-${ word.index }">${ html.join( '' ) }</div>`
+        this.#writingArea.innerHTML += `<div class="word" id="currentTest-word-${ word.index }">${ html }</div>`
         this.#words[ word.index ] = word
 
         return word.length + ( word.index != 0 ? 1 : 0 )
