@@ -21,18 +21,26 @@ export const TestDifficultyEntries: {
     [ 'average' ]: {
         id: 'average',
         name: 'average',
-        maxDelta: 180,
+        maxDelta: 160,
         penalizationIntervalDelay: 80,
         penaltyMultiplier: 0.25,
-        incorrectCharacterPenalty: 20,
+        incorrectCharacterPenalty: 15,
+    },
+    [ 'intermediate' ]: {
+        id: 'intermediate',
+        name: 'intermediate',
+        maxDelta: 120,
+        penalizationIntervalDelay: 70,
+        penaltyMultiplier: 0.5,
+        incorrectCharacterPenalty: 25,
     },
     [ 'exceptional' ]: {
         id: 'exceptional',
         name: 'exceptional',
-        maxDelta: 120,
+        maxDelta: 96,
         penalizationIntervalDelay: 60,
         penaltyMultiplier: 0.75,
-        incorrectCharacterPenalty: 30,
+        incorrectCharacterPenalty: 32,
     },
     [ 'thock' ]: {
         id: 'thock',
@@ -42,10 +50,10 @@ export const TestDifficultyEntries: {
         penaltyMultiplier: 1.5,
         incorrectCharacterPenalty: 40
     },
-    [ 'freak' ]: {
-        id: 'freak',
-        name: 'freak',
-        maxDelta: 50,
+    [ 'lobotomy' ]: {
+        id: 'lobotomy',
+        name: 'lobotomy',
+        maxDelta: 60,
         penalizationIntervalDelay: 20,
         penaltyMultiplier: 4,
         incorrectCharacterPenalty: 60,
