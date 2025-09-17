@@ -51,6 +51,18 @@ export class DifficultySelectionManager {
         })
     }
 
+    syncDifficultyIndicator () {
+        const indicatorElement = document.querySelector( '#difficultyOptionIndicator' ) as HTMLDivElement
+
+        if ( !this.#selectedDifficultyElement || !indicatorElement )
+            return
+
+        indicatorElement.style.left = `${ this.#selectedDifficultyElement.offsetLeft - 12 }px`
+        indicatorElement.style.top = `${ this.#selectedDifficultyElement.offsetTop - 4 }px`
+        indicatorElement.style.width = `${ this.#selectedDifficultyElement.clientWidth + 24 }px`
+        indicatorElement.style.height = `${ this.#selectedDifficultyElement.clientHeight + 8 }px`
+    }
+
     selectDifficulty ( index: number ) {
         console.debug( `changing difficulty to ${ index }` )
         this.#selectedDifficultyIndex = index
@@ -67,7 +79,10 @@ export class DifficultySelectionManager {
         if ( this.#selectedDifficultyElement )
             this.#selectedDifficultyElement.setAttribute( 'data-selected', 'false' )
 
+        this.#selectedDifficultyElement = element
+
         this.#scoreManager.setDifficulty( this.#selectedDifficulty )
+        this.syncDifficultyIndicator()
     }
 
     cycleSelectedDifficulty ( direction: 'previous' | 'next' ) {

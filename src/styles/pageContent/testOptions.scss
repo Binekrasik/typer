@@ -3,6 +3,15 @@
 
 #testOptions {
     margin-bottom: 1rem;
+    #difficultyOptionIndicator {
+        position: absolute;
+        z-index: -10;
+        left: 0;
+        top: 0;
+        transition: all easings.$easeSmooth .5s;
+        background: rgba( colors.$primary, .25 );
+    }
+
     #testDifficultySelection {
         display: flex;
         gap: 1rem;
@@ -15,7 +24,7 @@
             font-size: 24px;
             font-weight: 500;
 
-            transition: color easings.$easeSmooth .5s;
+
             color: rgba( colors.$primary, .25 );
 
             &:hover {

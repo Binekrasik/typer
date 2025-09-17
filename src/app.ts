@@ -40,6 +40,7 @@ const resetTest = () => {
     removeLoadingOverlay()
 
     scoreManager.debugScoreProperties()
+    difficultySelectionManager.syncDifficultyIndicator()
 }
 
 // initialize test
@@ -89,6 +90,7 @@ testManager.addListener({
     exec: () => {
         console.log( 'new test generated' )
         console.log( `needs regenerating: ${ testManager.needsRegenerating() }` )
+        difficultySelectionManager.syncDifficultyIndicator()
     }
 })
 
