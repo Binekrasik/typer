@@ -55,7 +55,7 @@ inputManager.addListener( 'character', character => {
 
     if ( testManager.typeCharacter( character ) ) {
         scoreManager.updateLastTypedTimestamp()
-        progressManager.increaseValue( 1 )
+        progressManager.increaseValue( scoreManager.getRewardValue( progressManager.getMaxValue() ) )
     } else progressManager.decreaseValue( scoreManager.getIncorrectCharacterPenalty() )
 })
 
@@ -76,6 +76,7 @@ progressManager.addListener({
     type: 'valueChange',
     exec: () => {
         console.group( 'app.ts valueChangeListener' )
+
         if ( progressManager.getValue() === 0 && testManager.getTestState().total.test.start !== -1 )
             testManager.finishTest()
 

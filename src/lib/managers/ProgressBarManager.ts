@@ -62,7 +62,7 @@ export class ProgressBarManager {
     getMaxValue = () => this.#maxValue
 
     increaseValue = ( amount: number ): number => {
-        this.setValue( this.#value + ( this.#value + amount > this.#maxValue ? 0 : amount ) )
+        this.setValue( this.#value + ( this.#value + amount > this.#maxValue ? this.#value + amount - this.#maxValue : amount ) )
         return this.#value + amount > this.#maxValue ? 0 : amount
     }
 

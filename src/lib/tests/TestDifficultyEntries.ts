@@ -5,6 +5,7 @@ export interface TestDifficulty {
     penalizationIntervalDelay: number
     penaltyMultiplier: number
     incorrectCharacterPenalty: number
+    rewardMultiplier: number
 }
 
 export const TestDifficultyEntries: {
@@ -17,6 +18,7 @@ export const TestDifficultyEntries: {
         penalizationIntervalDelay: 100,
         penaltyMultiplier: 0.15,
         incorrectCharacterPenalty: 10,
+        rewardMultiplier: 10,
     },
     [ 'average' ]: {
         id: 'average',
@@ -25,6 +27,7 @@ export const TestDifficultyEntries: {
         penalizationIntervalDelay: 80,
         penaltyMultiplier: 0.25,
         incorrectCharacterPenalty: 15,
+        rewardMultiplier: 5,
     },
     [ 'intermediate' ]: {
         id: 'intermediate',
@@ -33,6 +36,7 @@ export const TestDifficultyEntries: {
         penalizationIntervalDelay: 70,
         penaltyMultiplier: 0.5,
         incorrectCharacterPenalty: 25,
+        rewardMultiplier: 2.5,
     },
     [ 'exceptional' ]: {
         id: 'exceptional',
@@ -41,6 +45,7 @@ export const TestDifficultyEntries: {
         penalizationIntervalDelay: 60,
         penaltyMultiplier: 0.75,
         incorrectCharacterPenalty: 32,
+        rewardMultiplier: 2,
     },
     [ 'thock' ]: {
         id: 'thock',
@@ -48,7 +53,8 @@ export const TestDifficultyEntries: {
         maxDelta: 80,
         penalizationIntervalDelay: 40,
         penaltyMultiplier: 1.5,
-        incorrectCharacterPenalty: 40
+        incorrectCharacterPenalty: 40,
+        rewardMultiplier: 1,
     },
     [ 'lobotomy' ]: {
         id: 'lobotomy',
@@ -57,5 +63,6 @@ export const TestDifficultyEntries: {
         penalizationIntervalDelay: 20,
         penaltyMultiplier: 4,
         incorrectCharacterPenalty: 60,
+        rewardMultiplier: .5,
     }
 }
