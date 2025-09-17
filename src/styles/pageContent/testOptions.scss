@@ -15,9 +15,8 @@
             font-size: 24px;
             font-weight: 500;
 
+            transition: color easings.$easeSmooth .5s;
             color: rgba( colors.$primary, .25 );
-
-            transition: color easings.$easeSmooth .5s ;
 
             &:hover {
                 color: rgba( colors.$primary, .75 );
@@ -25,7 +24,7 @@
             }
 
             &[ data-selected="true" ] {
-                color: rgba( colors.$primary, 1 )
+                color: colors.$primary;
             }
         }
     }

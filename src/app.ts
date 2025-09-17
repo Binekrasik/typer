@@ -9,13 +9,18 @@ import { TestDifficultyEntries } from './lib/tests/TestDifficultyEntries.ts'
 import { Debug } from './lib/utils/Debug.ts'
 import { DifficultySelectionManager } from './lib/managers/DifficultySelectionManager.ts'
 
+/*
+ * I LOVE HUGE CODE MONOLITHS!!!
+ * todo: rewrite this shit
+ */
+
 let testsCount = 0
 
 const progressManager = new ProgressBarManager()
 const inputManager = new InputManager()
 const testManager = new TestManager()
 const scoreManager = new ScoreManager( progressManager, TestDifficultyEntries.average )
-new DifficultySelectionManager( scoreManager )
+const difficultySelectionManager = new DifficultySelectionManager( scoreManager )
 
 const wordCount = 20
 
@@ -60,6 +65,11 @@ inputManager.addListener( 'meta', key => {
         && arrayIncludesAny( inputManager.activeModifierKeys, [ 'ControlLeft', 'ControlRight' ] )
         && arrayIncludesAny( inputManager.activeModifierKeys, [ 'ShiftLeft', 'ShiftRight' ] )
     ) resetTest()
+
+    if ( key === 'Tab' )
+        if ( arrayIncludesAny( inputManager.activeModifierKeys, [ 'ShiftLeft', 'ShiftRight' ] ) ) {
+            difficultySelectionManager.cycleSelectedDifficulty( 'previous' )
+        } else difficultySelectionManager.cycleSelectedDifficulty( 'next' )
 })
 
 progressManager.addListener({

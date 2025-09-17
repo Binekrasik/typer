@@ -6,6 +6,8 @@ export class DifficultySelectionManager {
     #selectedDifficulty: TestDifficulty = TestDifficultyEntries.average
     #selectedDifficultyElement: HTMLAnchorElement | null = null
     #difficultySelectionElement: HTMLDivElement
+    #difficulties: Array< TestDifficulty > = []
+    #selectedDifficultyIndex: number = 0
     #scoreManager: ScoreManager
 
     constructor ( scoreManager: ScoreManager ) {
@@ -17,35 +19,47 @@ export class DifficultySelectionManager {
 
         this.#difficultySelectionElement = unverifiedSelection as HTMLDivElement
         this.updateDifficultySelection()
-        this.selectDifficulty( this.#selectedDifficulty )
+        this.selectDifficulty( this.#difficulties.indexOf( this.#selectedDifficulty ) )
     }
 
     updateDifficultySelection () {
+        this.#difficultySelectionElement.replaceChildren()
+        this.#difficulties = []
         let html = ''
 
+        // preprocess the entries
         for ( let entry in TestDifficultyEntries ) {
-            const difficulty = new DifficultyEntity( TestDifficultyEntries[ entry ] )
-            html += difficulty.toHtml()
+            this.#difficulties.push( TestDifficultyEntries[ entry ] )
         }
+
+        // populate the difficulty selector
+        this.#difficulties.forEach( ( entry, index ) => {
+            const difficulty = new DifficultyEntity( entry, index )
+
+            html += difficulty.toHtml()
+        })
 
         this.#difficultySelectionElement.innerHTML = html
 
-        for ( let entry in TestDifficultyEntries ) {
-            const element = document.querySelector( `#difficultyOption-${ TestDifficultyEntries[ entry ].id }` ) as HTMLAnchorElement
+        // add event listeners
+        this.#difficulties.forEach( ( _, index ) => {
+            const element = document.querySelector( `#difficultyOption-${ index }` ) as HTMLAnchorElement
 
             element.addEventListener( 'click', () => {
-                this.selectDifficulty( TestDifficultyEntries[ entry ] )
+                this.selectDifficulty( index )
             })
-        }
+        })
     }
 
-    selectDifficulty ( difficulty: TestDifficulty ) {
+    selectDifficulty ( index: number ) {
+        console.debug( `changing difficulty to ${ index }` )
+        this.#selectedDifficultyIndex = index
         this.updateDifficultySelection()
-        this.#selectedDifficulty = difficulty
+        this.#selectedDifficulty = this.#difficulties[ index ]
 
-        const unverifiedElement = document.querySelector( `#difficultyOption-${ difficulty.id }` )
+        const unverifiedElement = document.querySelector( `#difficultyOption-${ index }` )
         if ( !unverifiedElement )
-            throw Error( `Couldn't find a HTML element for difficulty id ${ difficulty.id }.` )
+            throw Error( `Couldn't find a HTML element for the index ${ index }.` )
 
         const element = unverifiedElement as HTMLAnchorElement
         element.setAttribute( 'data-selected', 'true' )
@@ -53,6 +67,12 @@ export class DifficultySelectionManager {
         if ( this.#selectedDifficultyElement )
             this.#selectedDifficultyElement.setAttribute( 'data-selected', 'false' )
 
-        this.#scoreManager.setDifficulty( difficulty )
+        this.#scoreManager.setDifficulty( this.#selectedDifficulty )
+    }
+
+    cycleSelectedDifficulty ( direction: 'previous' | 'next' ) {
+        if ( direction === 'previous' ) {
+            this.selectDifficulty( this.#selectedDifficultyIndex - 1 === -1 ? this.#difficulties.length - 1 : this.#selectedDifficultyIndex - 1 )
+        } else this.selectDifficulty( this.#selectedDifficultyIndex + 1 === this.#difficulties.length ? 0 : this.#selectedDifficultyIndex + 1 )
     }
 }
