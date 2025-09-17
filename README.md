@@ -3,7 +3,9 @@
 a simple, beautiful and unstable typing experience.
 
 > [!WARNING]
-> this project is VERY bare-bones and I don't guarantee maintaining it.
+> as you could guess, this project isn't the most stable thing ever built and there WILL be bugs.
+
+> also beware that this is just a side-project of mine and thus I can't guarantee that I'll maintain it forever
 
 ## running
 
