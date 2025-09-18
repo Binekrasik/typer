@@ -120,10 +120,10 @@ testManager.addListener({
             <p style="color: ${ state.total.test.result === 'succeeded' ? '#0f0' : '#f00' }">test ${ state.total.test.result }</p>
             <p>test this session: ${ testsCount }</p>
             <p>difficulty: ${ scoreManager.getDifficulty().name }</p>
-            <p>test duration: ${ state.total.test.total / 1000 }s</p><br>
-            <p>total characters: ${ state.total.charactersWritten.total }</p><br>
-            <p>correct characters: ${ state.total.charactersWritten.correct }</p><br>
-            <p>rating: ${ Math.round( progressManager.getPercentageValue() ) }%</p><br>
+            <p>test duration: ${ state.total.test.total / 1000 }s</p>
+            <p>total characters: ${ state.total.charactersWritten.total }</p>
+            <p>correct characters: ${ state.total.charactersWritten.correct }</p>
+            <p>rating: ${ Math.round( progressManager.getPercentageValue() ) }%</p>
         `)
         console.groupEnd()
     }

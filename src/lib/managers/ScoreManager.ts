@@ -25,13 +25,12 @@ export class ScoreManager {
 
     debugScoreProperties () {
         Debug.setContent(`
-            <p></p>
-            <p>difficulty: ${ this.#difficulty.name }</p><br>
-            <p>max delta: ${ this.#difficulty.maxDelta } (~${ ( 1000 / this.#difficulty.maxDelta * 60 ) / 5 } wpm)</p><br>
-            <p>interval: ${ this.#difficulty.penalizationIntervalDelay }</p><br>
-            <p>incorrect penalty: ${ this.getIncorrectCharacterPenalty() }</p><br>
-            <p>reward multiplier: ${ this.getRewardValue( 100 ) }</p><br>
-            <p>minimum timeout penalty (${ this.#difficulty.maxDelta }): ${ this.calculatePenalty( this.#difficulty.maxDelta ) }</p><br>
+            <p>difficulty: ${ this.#difficulty.name }</p>
+            <p>max delta: ${ this.#difficulty.maxDelta } (~${ ( 1000 / this.#difficulty.maxDelta * 60 ) / 5 } wpm)</p>
+            <p>interval: ${ this.#difficulty.penalizationIntervalDelay }</p>
+            <p>incorrect penalty: ${ this.getIncorrectCharacterPenalty() }</p>
+            <p>reward multiplier: ${ this.getRewardValue( 100 ) }</p>
+            <p>minimum timeout penalty (${ this.#difficulty.maxDelta }): ${ this.calculatePenalty( this.#difficulty.maxDelta ) }</p>
         `)
     }
 
