@@ -69,6 +69,11 @@ export class TestManager {
         // hardcoded default dictionary for now
         this.#dictionary = new EnglishBritish()
         this.clearTest()
+
+        window.addEventListener( 'resize', () => this.syncCaret({
+            word: this.#testState.current.word.index,
+            character: this.#testState.current.character.index,
+        }))
     }
 
     // --- - - - - - - - ---

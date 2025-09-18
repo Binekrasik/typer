@@ -20,6 +20,8 @@ export class DifficultySelectionManager {
         this.#difficultySelectionElement = unverifiedSelection as HTMLDivElement
         this.updateDifficultySelection()
         this.selectDifficulty( this.#difficulties.indexOf( this.#selectedDifficulty ) )
+
+        window.addEventListener( 'resize', () => this.syncDifficultyIndicator() )
     }
 
     updateDifficultySelection () {
