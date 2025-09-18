@@ -59,9 +59,9 @@ export class DifficultySelectionManager {
         if ( !this.#selectedDifficultyElement || !indicatorElement )
             return
 
-        indicatorElement.style.left = `${ this.#selectedDifficultyElement.offsetLeft - 12 }px`
+        indicatorElement.style.left = `${ this.#selectedDifficultyElement.offsetLeft - 20 }px`
         indicatorElement.style.top = `${ this.#selectedDifficultyElement.offsetTop - 4 }px`
-        indicatorElement.style.width = `${ this.#selectedDifficultyElement.clientWidth + 24 }px`
+        indicatorElement.style.width = `${ this.#selectedDifficultyElement.clientWidth + 40 }px`
         indicatorElement.style.height = `${ this.#selectedDifficultyElement.clientHeight + 8 }px`
     }
 

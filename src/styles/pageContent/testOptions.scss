@@ -2,29 +2,32 @@
 @use '../values/easings' as easings;
 
 #testOptions {
-    margin-bottom: 1rem;
+margin-bottom: 1rem;
     #difficultyOptionIndicator {
         position: absolute;
-        z-index: -10;
+        z-index: 2;
         left: 0;
         top: 0;
         transition: all easings.$easeSmooth .5s;
         background: rgba( colors.$primary, .25 );
+        backdrop-filter: blur( 10px ) brightness( 300% );
     }
 
     #testDifficultySelection {
         display: flex;
-        gap: 1rem;
+        gap: 24px;
 
         .difficultyOption {
             user-select: none;
             -webkit-user-select: none;
             -moz-user-select: none;
 
+            z-index: auto;
+
             font-size: 24px;
             font-weight: 500;
 
-
+            transition: all easings.$easeSmooth .5s;
             color: rgba( colors.$primary, .25 );
 
             &:hover {
@@ -33,6 +36,7 @@
             }
 
             &[ data-selected="true" ] {
+                z-index: 3;
                 color: colors.$primary;
             }
         }
