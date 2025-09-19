@@ -10,7 +10,7 @@ margin-bottom: 1rem;
         top: 0;
         transition: all easings.$easeSmooth .5s;
         background: rgba( colors.$primary, .25 );
-        backdrop-filter: blur( 10px ) brightness( 300% );
+        backdrop-filter: blur( 100px ) brightness( 0% );
     }
 
     #testDifficultySelection {
