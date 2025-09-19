@@ -14,16 +14,8 @@
             font-weight: 400;
             font-size: 3rem;
 
-            transition: color .5s easings.$easeSmooth;
-
-            &[ data-state='untyped' ] {
-                color: rgba( colors.$primary, .25 );
-            }
-
-            &[ data-state='highlighted' ] {
-                color: rgba( colors.$primary, .6 );
-                // text-decoration: underline;
-            }
+            transition: color .25s easings.$easeSmooth;
+            color: rgba( colors.$primary, .25 );
 
             &[ data-state='typed' ] {
                 color: colors.$primary;
