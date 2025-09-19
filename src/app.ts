@@ -22,7 +22,7 @@ const testManager = new TestManager()
 const scoreManager = new ScoreManager( progressManager, TestDifficultyEntries.average )
 const difficultySelectionManager = new DifficultySelectionManager( scoreManager )
 
-const wordCount = 20
+const wordCount = 10
 
 const removeLoadingOverlay = () => {
     const loadingOverlay = document.querySelector( '#loaderOverlay' ) as HTMLDivElement
