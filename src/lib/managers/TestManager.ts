@@ -137,7 +137,7 @@ export class TestManager {
 
         console.debug( this.#testState )
 
-        this.highlightCurrentCharacter()
+        // this.highlightCurrentCharacter()
         this.#needsRegenerating = false
 
         this.callListeners( 'generate' )
