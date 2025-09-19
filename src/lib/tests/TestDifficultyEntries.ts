@@ -16,7 +16,7 @@ export const TestDifficultyEntries: {
         name: 'newbie',
         maxDelta: 300,
         penalizationIntervalDelay: 100,
-        penaltyMultiplier: 0.15,
+        penaltyMultiplier: 0.05,
         incorrectCharacterPenalty: 10,
         rewardMultiplier: 10,
     },
