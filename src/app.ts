@@ -8,6 +8,7 @@ import { ScoreManager } from './lib/managers/ScoreManager.ts'
 import { TestDifficultyEntries } from './lib/tests/TestDifficultyEntries.ts'
 import { Debug } from './lib/utils/Debug.ts'
 import { DifficultySelectionManager } from './lib/managers/DifficultySelectionManager.ts'
+import { SettingsManager } from './lib/managers/SettingsManager.ts'
 
 /*
  * I LOVE HUGE CODE MONOLITHS!!!
@@ -16,13 +17,14 @@ import { DifficultySelectionManager } from './lib/managers/DifficultySelectionMa
 
 let testsCount = 0
 
+const settingsManager = new SettingsManager()
 const progressManager = new ProgressBarManager()
 const inputManager = new InputManager()
-const testManager = new TestManager()
+const testManager = new TestManager( settingsManager )
 const scoreManager = new ScoreManager( progressManager, TestDifficultyEntries.average )
 const difficultySelectionManager = new DifficultySelectionManager( scoreManager )
 
-const wordCount = 10
+const wordCount = settingsManager.get( 'wordCount' ).value
 
 const removeLoadingOverlay = () => {
     const loadingOverlay = document.querySelector( '#loaderOverlay' ) as HTMLDivElement
@@ -36,11 +38,11 @@ const resetTest = () => {
     testManager.regenerateTest( wordCount )
     progressManager.reset()
     progressManager.setMaxValue( testManager.getTestLength() )
+    difficultySelectionManager.syncDifficultyIndicator()
 
     removeLoadingOverlay()
 
     scoreManager.debugScoreProperties()
-    difficultySelectionManager.syncDifficultyIndicator()
 }
 
 // initialize test

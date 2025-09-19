@@ -1,7 +1,9 @@
+import type { DictionaryWordsDataset } from '../Dictionary.ts'
+
 // MONKEYTYPE ON TOP
-// many thanks for the dataset :>
-export const words25k = {
-    name: 'British english 10k',
+// many thanks for the dictionary :>
+export const english10k: DictionaryWordsDataset = {
+    name: 'english 10k',
     words: [
         "the",
         "of",

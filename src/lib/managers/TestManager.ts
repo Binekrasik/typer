@@ -1,8 +1,9 @@
 import type { Dictionary } from '../tests/dictionaries/Dictionary.ts'
-import { EnglishBritish } from '../tests/dictionaries/EnglishBritish.ts'
+import { English } from '../tests/dictionaries/english/English.ts'
 import { WordEntity } from '../tests/WordEntity.ts'
 import type { TestState } from '../tests/TestState.ts'
 import { arrayYoink } from '../utils/arrays.ts'
+import type { SettingsManager } from './SettingsManager.ts'
 
 type TestEventType = 'finish' | 'start' | 'generate'
 type TestEventListenerExec = () => void
@@ -33,7 +34,7 @@ export class TestManager {
             test: {
                 start: -1,
                 end: 0,
-                total: 1,
+                total: -1,
                 length: 0,
                 result: null,
             },
@@ -51,7 +52,7 @@ export class TestManager {
     #words: Array< WordEntity > = []
     #needsRegenerating: boolean = false
 
-    constructor () {
+    constructor ( settingsManager: SettingsManager ) {
         // find the writing area
         const areaElement = document.querySelector( '#testWritingArea' )
         if ( !areaElement )
@@ -67,13 +68,25 @@ export class TestManager {
         this.#caretElement = caretElement as HTMLDivElement
 
         // hardcoded default dictionary for now
-        this.#dictionary = new EnglishBritish()
+        this.#dictionary = new English()
         this.clearTest()
 
         window.addEventListener( 'resize', () => this.syncCaret({
             word: this.#testState.current.word.index,
             character: this.#testState.current.character.index,
         }))
+
+        settingsManager.addListener({
+            type: 'valuechange',
+            exec: ( value: { id: string, value: any } ) => {
+                if ( value.id === 'wordCount' ) {
+                    if ( this.#testState.total.test.start !== -1 )
+                        this.finishTest()
+
+                    this.regenerateTest( value.value )
+                }
+            }
+        })
     }
 
     // --- - - - - - - - ---
@@ -213,7 +226,7 @@ export class TestManager {
         this.#testState.current.character.index = 0
 
         this.#testState.current.character.symbol = this.getCurrentCharacterSymbol()
-        this.highlightCurrentCharacter()
+        this.syncCaret()
     }
 
     advanceCurrentCharacter () {
@@ -226,7 +239,7 @@ export class TestManager {
         if ( this.didReachWordEnd() ) return
 
         this.#testState.current.character.symbol = this.getCurrentCharacterSymbol()
-        this.highlightCurrentCharacter()
+        this.syncCaret()
     }
 
     didReachWordEnd = () =>
