@@ -138,6 +138,7 @@ export class TestManager {
         console.debug( this.#testState )
 
         // this.highlightCurrentCharacter()
+        this.syncCaret()
         this.#needsRegenerating = false
 
         this.callListeners( 'generate' )
@@ -185,10 +186,16 @@ export class TestManager {
         const span = unchecked as HTMLSpanElement
         span.setAttribute( 'data-state', 'highlighted' )
 
-        this.syncCaret( index )
+        this.syncCaret()
     }
 
-    syncCaret ( index: { word: number, character: number } ) {
+    syncCaret ( index?: { word: number, character: number } ) {
+        if ( !index )
+            index = {
+                word: this.#testState.current.word.index,
+                character: this.#testState.current.character.index,
+            }
+
         const unchecked = document.querySelector( `#currentTest-word-${ index.word }-letter-${ index.character }` )
         if ( !unchecked )
             throw Error( `Character with word index ${ index.word } and character index ${ index.character } doesn't exist.` )
