@@ -37,27 +37,16 @@ export class ScoreManager {
     startPenalizer () {
         this.updateLastTypedTimestamp()
 
-        console.group( 'Score properties' )
-        console.debug( `difficulty: ${ this.#difficulty }` )
-        console.debug( `max delta: ${ this.#difficulty.maxDelta } (~${ ( 1000 / this.#difficulty.maxDelta * 60 ) / 5 } wpm)` )
-        console.debug( `interval: ${ this.#difficulty.penalizationIntervalDelay }` )
-        console.debug( `incorrect penalty: ${ this.getIncorrectCharacterPenalty() }` )
-        console.debug( `penalty (${ this.#difficulty.maxDelta }): ${ this.calculatePenalty( this.#difficulty.maxDelta ) }` )
-        console.groupEnd()
-
         this.#penalizer = setInterval( () => {
             if ( this.getDeltaTyped() > this.#difficulty.maxDelta && this.#progressManager.getValue() !== 0 ) {
                 this.penalize( this.calculatePenalty() )
             }
 
         }, this.#difficulty.penalizationIntervalDelay )
-
-        console.debug( `started penalizer: ${ this.#penalizer }` )
     }
 
     stopPenalizer () {
         clearInterval( this.#penalizer )
-        console.debug( `cleared penalizer: ${ this.#penalizer }` )
     }
 
     penalize ( penalty: number ) {

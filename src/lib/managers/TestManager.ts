@@ -107,15 +107,12 @@ export class TestManager {
     // --- - - - - - - - ---
 
     clearTest () {
-        console.debug( 'clearing test' )
         this.#writingArea.innerHTML = ''
         this.#testState = TestManager.#emptyTestState
         this.#words = []
     }
 
     regenerateTest ( wordCount: number ) {
-        console.group( 'TestManager::regenerateTest' )
-
         this.toggleTestResetNotice( false )
 
         this.clearTest()
@@ -148,14 +145,9 @@ export class TestManager {
             }
         }
 
-        console.debug( this.#testState )
-
         // this.highlightCurrentCharacter()
         this.syncCaret()
         this.#needsRegenerating = false
-
-        this.callListeners( 'generate' )
-        console.groupEnd()
     }
 
     appendWord ( word: WordEntity ): number {
@@ -247,10 +239,7 @@ export class TestManager {
         && !this.#words[ this.#testState.current.word.index ].getSymbol( this.#testState.current.character.index )
 
     typeCharacter ( input: string ): boolean {
-        console.group( 'TestManager::typeCharacter' )
-
         if ( this.#needsRegenerating ) {
-            console.groupEnd()
             return false
         }
 
@@ -264,7 +253,6 @@ export class TestManager {
         if ( this.#testState.current.character.symbol === input ) {
             const currentUnchecked = document.querySelector( `#currentTest-word-${ this.#testState.current.word.index }-letter-${ this.#testState.current.character.index }` )
             if ( !currentUnchecked ) {
-                console.groupEnd()
                 return false
             }
 
@@ -277,7 +265,6 @@ export class TestManager {
             if ( this.#testState.total.charactersWritten.correct === this.#testState.total.test.length )
                 this.finishTest()
 
-            console.groupEnd()
             return true
         }
 
@@ -285,16 +272,13 @@ export class TestManager {
             this.advanceCurrentWord()
             this.#testState.total.charactersWritten.correct++
 
-            console.groupEnd()
             return true
         }
 
-        console.groupEnd()
         return false
     }
 
     finishTest () {
-        console.group( 'TestManager::finishTest' )
         this.#testState.total.test.end = Date.now()
         this.#testState.total.test.total = this.#testState.total.test.end - this.#testState.total.test.start
         this.#testState.total.test.result = this.#testState.total.charactersWritten.correct === this.#testState.total.test.length ? 'succeeded' : 'failed'
@@ -304,7 +288,6 @@ export class TestManager {
         this.callListeners( 'finish' )
 
         this.toggleTestResetNotice( true )
-        console.groupEnd()
     }
 
     toggleTestResetNotice ( visible?: boolean ) {

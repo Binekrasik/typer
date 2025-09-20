@@ -46,15 +46,12 @@ const resetTest = () => {
 }
 
 // initialize test
-console.group( 'Test initialization' )
 window.onload = () => {
     resetTest()
 }
-console.groupEnd()
 
 inputManager.addListener( 'character', character => {
     if ( testManager.needsRegenerating() ) return
-    console.debug( `delta typed: ${ scoreManager.getDeltaTyped() }` )
 
     if ( testManager.typeCharacter( character ) ) {
         scoreManager.updateLastTypedTimestamp()
@@ -78,20 +75,14 @@ inputManager.addListener( 'meta', key => {
 progressManager.addListener({
     type: 'valueChange',
     exec: () => {
-        console.group( 'app.ts valueChangeListener' )
-
         if ( progressManager.getValue() === 0 && testManager.getTestState().total.test.start !== -1 )
             testManager.finishTest()
-
-        console.groupEnd()
     }
 })
 
 testManager.addListener({
     type: 'generate',
     exec: () => {
-        console.log( 'new test generated' )
-        console.log( `needs regenerating: ${ testManager.needsRegenerating() }` )
         difficultySelectionManager.syncDifficultyIndicator()
     }
 })
@@ -99,24 +90,18 @@ testManager.addListener({
 testManager.addListener({
     type: 'start',
     exec: () => {
-        console.group( 'app.ts startListener' )
         progressManager.setValue( progressManager.getMaxValue() )
         scoreManager.startPenalizer()
-
-        console.log( 'test started' )
-        console.groupEnd()
     }
 })
 
 testManager.addListener({
     type: 'finish',
     exec: () => {
-        console.group( 'app.ts finishListener' )
         testsCount++
         const state = testManager.getTestState()
 
         scoreManager.stopPenalizer()
-        console.log( 'test finished' )
 
         Debug.setContent(`
             <p style="color: ${ state.total.test.result === 'succeeded' ? '#0f0' : '#f00' }">test ${ state.total.test.result }</p>
@@ -127,6 +112,5 @@ testManager.addListener({
             <p>correct characters: ${ state.total.charactersWritten.correct }</p>
             <p>rating: ${ Math.round( progressManager.getPercentageValue() ) }%</p>
         `)
-        console.groupEnd()
     }
 })
