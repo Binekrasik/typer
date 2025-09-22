@@ -113,7 +113,7 @@ export class TestManager {
     }
 
     regenerateTest ( wordCount: number ) {
-        this.toggleTestResetNotice( false )
+        // this.toggleTestResetNotice( false )
 
         this.clearTest()
         const testLength = this.appendRandomWords( wordCount )
@@ -287,13 +287,13 @@ export class TestManager {
 
         this.callListeners( 'finish' )
 
-        this.toggleTestResetNotice( true )
+        // this.toggleTestResetNotice( true )
     }
 
-    toggleTestResetNotice ( visible?: boolean ) {
+    /* toggleTestResetNotice ( visible?: boolean ) {
         const resetNoticeElement = document.querySelector( '#testResetNotice' ) as HTMLDivElement
         resetNoticeElement.setAttribute( 'data-visible', typeof visible !== 'undefined' ? `${ visible }` : resetNoticeElement.getAttribute( 'data-visible' ) == 'true' ? 'false' : 'true' )
-    }
+    } */
 
     // --- - - - - - - - ---
     //       UTILITIES

@@ -1,25 +1,34 @@
 import { type TestDifficulty, TestDifficultyEntries } from '../tests/TestDifficultyEntries.ts'
 import { DifficultyEntity } from '../tests/DifficultyEntity.ts'
 import type { ScoreManager } from './ScoreManager.ts'
+import { sounds } from '../audio/sounds.ts'
 
 export class DifficultySelectionManager {
     #selectedDifficulty: TestDifficulty = TestDifficultyEntries.average
     #selectedDifficultyElement: HTMLAnchorElement | null = null
+    #testOptionsElement: HTMLDivElement
     #difficultySelectionElement: HTMLDivElement
     #difficulties: Array< TestDifficulty > = []
     #selectedDifficultyIndex: number = 0
     #scoreManager: ScoreManager
+    #locked: boolean = false
 
     constructor ( scoreManager: ScoreManager ) {
         const unverifiedSelection = document.querySelector( '#testDifficultySelection' )
         if ( !unverifiedSelection )
             throw Error( 'Couldn\'t find the difficulty selection element.' )
 
+        const unverifiedOptions = document.querySelector( '#testOptions' )
+        if ( !unverifiedOptions )
+            throw Error( 'Couldn\'t find the test options element.' )
+
         this.#scoreManager = scoreManager
 
         this.#difficultySelectionElement = unverifiedSelection as HTMLDivElement
+        this.#testOptionsElement = unverifiedOptions as HTMLDivElement
+
         this.updateDifficultySelection()
-        this.selectDifficulty( this.#difficulties.indexOf( this.#selectedDifficulty ) )
+        this.selectDifficulty( this.#difficulties.indexOf( this.#selectedDifficulty ), false )
 
         window.addEventListener( 'resize', () => this.syncDifficultyIndicator() )
     }
@@ -65,7 +74,9 @@ export class DifficultySelectionManager {
         indicatorElement.style.height = `${ this.#selectedDifficultyElement.clientHeight + 8 }px`
     }
 
-    selectDifficulty ( index: number ) {
+    selectDifficulty ( index: number, playSound?: boolean ) {
+        if ( this.#locked ) return
+
         console.debug( `changing difficulty to ${ index }` )
         this.#selectedDifficultyIndex = index
         this.updateDifficultySelection()
@@ -85,11 +96,23 @@ export class DifficultySelectionManager {
 
         this.#scoreManager.setDifficulty( this.#selectedDifficulty )
         this.syncDifficultyIndicator()
+
+        if ( playSound !== false )
+            sounds.select.play()
     }
 
     cycleSelectedDifficulty ( direction: 'previous' | 'next' ) {
         if ( direction === 'previous' ) {
             this.selectDifficulty( this.#selectedDifficultyIndex - 1 === -1 ? this.#difficulties.length - 1 : this.#selectedDifficultyIndex - 1 )
         } else this.selectDifficulty( this.#selectedDifficultyIndex + 1 === this.#difficulties.length ? 0 : this.#selectedDifficultyIndex + 1 )
+    }
+
+    lockSelection = () => {
+        this.#locked = true
+        this.#testOptionsElement.setAttribute( 'data-locked', 'true' )
+    }
+    unlockSelection = () => {
+        this.#locked = false
+        this.#testOptionsElement.setAttribute( 'data-locked', 'false' )
     }
 }

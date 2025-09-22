@@ -5,6 +5,9 @@
     display: flex;
     justify-content: center;
 
+    position: relative;
+    z-index: 1;
+
     margin-top: 3rem;
     font-size: 18px;
     font-weight: 500;

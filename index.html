@@ -79,14 +79,45 @@
             </div>
 
             <div id="currentTest">
+                <div id="testResultsOverlay">
+                    <div class="ranking">
+                        <div class="rankBox">
+                            <h1 class="rank"></h1>
+                            <h2 class="rating"></h2>
+                        </div>
+
+                        <div class="progressBox">
+                            <div class="achievedProgressBox">
+                                <p>Nah%</p>
+                                <div class="achievedProgressBar"></div>
+                            </div>
+
+                            <div class="progressRankingBar">
+                                <div class="rankSS"></div>
+                                <div class="rankS"></div>
+                                <div class="rankA"></div>
+                                <div class="rankB"></div>
+                                <div class="rankC"></div>
+                                <div class="rankD"></div>
+                                <div class="rankF"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats">
+                        <p id="testResultsSpeedText"></p>
+                        <p id="testResultsAccuracyText"></p>
+                        <p id="testResultsDurationText"></p>
+                    </div>
+
+                    <p>reset test using <span>ctrl + shift + backspace</span></p>
+                </div>
                 <div id="testCaret"></div>
                 <div id="testWritingArea"></div>
-                <div id="testResetNotice" data-visible="false">
-                    <p>reset using <span>ctrl + shift + backspace</span></p>
-                </div>
             </div>
         </div>
     </div>
+
     <script type="module" src="/src/app.ts"></script>
 </body>
 </html>

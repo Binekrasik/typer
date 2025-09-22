@@ -4,6 +4,8 @@
 #app {
     #pageContent {
         #currentTestInfo {
+            z-index: 1;
+
             #testProgressBar {
                 margin-bottom: 1.75rem;
 
@@ -11,6 +13,8 @@
                 width: 10vw;
 
                 background: rgba( colors.$primary, .25 );
+
+                transform: skewX( -25deg );
 
                 .progressValue {
                     width: 50%;

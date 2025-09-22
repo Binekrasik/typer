@@ -2,7 +2,13 @@
 @use '../values/easings' as easings;
 
 #testOptions {
-margin-bottom: 1rem;
+    margin-bottom: 1rem;
+    transition: opacity easings.$easeSmooth .5s;
+
+    &[ data-locked="true" ] {
+        opacity: 0;
+    }
+
     #difficultyOptionIndicator {
         position: absolute;
         z-index: 2;
@@ -11,6 +17,7 @@ margin-bottom: 1rem;
         transition: all easings.$easeSmooth .5s;
         background: rgba( colors.$primary, .25 );
         backdrop-filter: blur( 100px ) brightness( 0% );
+        transform: skewX( -25deg );
     }
 
     #testDifficultySelection {
@@ -26,6 +33,7 @@ margin-bottom: 1rem;
 
             font-size: 24px;
             font-weight: 500;
+            font-style: italic;
 
             transition: color easings.$easeSmooth .5s;
             color: rgba( colors.$primary, .25 );
