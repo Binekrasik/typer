@@ -25,7 +25,7 @@ const inputManager = new InputManager()
 const testManager = new TestManager( settingsManager )
 const scoreManager = new ScoreManager( progressManager, TestDifficultyEntries.average )
 const difficultySelectionManager = new DifficultySelectionManager( scoreManager )
-const resultsManager = new TestResultsManager()
+new TestResultsManager()
 
 const wordCount = settingsManager.get( 'wordCount' ).value
 
