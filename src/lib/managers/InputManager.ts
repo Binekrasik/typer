@@ -2,7 +2,7 @@ import type { Layout } from '../tests/layouts/Layout.ts'
 import { CzechQwertz } from '../tests/layouts/CzechQwertz.ts'
 import { arrayYoink } from '../utils/arrays.ts'
 
-type InputListenerType = 'character' | 'meta'
+type InputListenerType = 'character' | 'meta' | 'modifier'
 type InputListenerExec = ( character: string ) => void
 
 interface InputListener {
@@ -29,11 +29,10 @@ export class InputManager {
     }
 
     private destroyHooks () {
-        // remove internal event listener
+        // remove internal event listeners
         if ( this.#internalKeypressListener )
             document.removeEventListener( 'keydown', this.#internalKeypressListener )
 
-        // remove internal event listener
         if ( this.#internalKeyreleaseListener )
             document.removeEventListener( 'keyup', this.#internalKeyreleaseListener )
     }
@@ -50,6 +49,18 @@ export class InputManager {
                 this.activeModifierKeys.push( event.code )
                 event.preventDefault()
             } else {
+                // call modifier key listeners
+                this.#listeners
+                    .filter( listener => listener.type === 'modifier' )
+                    .forEach( listener => {
+                        const matched = this.#activeLayout.isModifier( event.code )
+
+                        if ( matched ) {
+                            event.preventDefault()
+                            listener.exec( event.code )
+                        }
+                    })
+
                 // call meta key listeners
                 this.#listeners
                     .filter( listener => listener.type === 'meta' )

@@ -9,6 +9,8 @@ import { TestDifficultyEntries } from './lib/tests/TestDifficultyEntries.ts'
 import { Debug } from './lib/utils/Debug.ts'
 import { DifficultySelectionManager } from './lib/managers/DifficultySelectionManager.ts'
 import { SettingsManager } from './lib/managers/SettingsManager.ts'
+import { TestResultsManager } from './lib/managers/TestResultsManager.ts'
+import { sounds } from './lib/audio/sounds.ts'
 
 /*
  * I LOVE HUGE CODE MONOLITHS!!!
@@ -23,6 +25,7 @@ const inputManager = new InputManager()
 const testManager = new TestManager( settingsManager )
 const scoreManager = new ScoreManager( progressManager, TestDifficultyEntries.average )
 const difficultySelectionManager = new DifficultySelectionManager( scoreManager )
+new TestResultsManager()
 
 const wordCount = settingsManager.get( 'wordCount' ).value
 
@@ -33,6 +36,9 @@ const removeLoadingOverlay = () => {
 
 const resetTest = () => {
     console.debug( 'resetting test' )
+
+    if ( testManager.getTestState().total.test.start !== -1 )
+        testManager.finishTest()
 
     scoreManager.stopPenalizer()
     testManager.regenerateTest( wordCount )
@@ -48,10 +54,17 @@ const resetTest = () => {
 // initialize test
 window.onload = () => {
     resetTest()
+
+    setInterval( () => {
+        testManager.syncCaret()
+        difficultySelectionManager.syncDifficultyIndicator()
+    }, 400 )
 }
 
 inputManager.addListener( 'character', character => {
     if ( testManager.needsRegenerating() ) return
+
+    sounds.type.play()
 
     if ( testManager.typeCharacter( character ) ) {
         scoreManager.updateLastTypedTimestamp()
@@ -90,6 +103,8 @@ testManager.addListener({
 testManager.addListener({
     type: 'start',
     exec: () => {
+        difficultySelectionManager.lockSelection()
+
         progressManager.setValue( progressManager.getMaxValue() )
         scoreManager.startPenalizer()
     }
@@ -101,7 +116,15 @@ testManager.addListener({
         testsCount++
         const state = testManager.getTestState()
 
+        difficultySelectionManager.unlockSelection()
         scoreManager.stopPenalizer()
+
+        /* resultsManager.showResults({
+            rank: TestResultsManager.getRank( progressManager.getPercentageValue() ),
+            rating: progressManager.getPercentageValue(),
+            difficulty: scoreManager.getDifficulty(),
+            dateTimestamp: Date.now(),
+        }) */
 
         Debug.setContent(`
             <p style="color: ${ state.total.test.result === 'succeeded' ? '#0f0' : '#f00' }">test ${ state.total.test.result }</p>

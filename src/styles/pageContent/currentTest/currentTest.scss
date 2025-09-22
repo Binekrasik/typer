@@ -1,3 +1,8 @@
 @forward 'testCaret';
 @forward 'testResetNotice';
 @forward 'testWritingArea';
+@forward 'testResultsOverlay';
+
+#currentTest {
+    position: relative;
+}
