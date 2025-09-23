@@ -3,13 +3,13 @@ import {
     TestRanks,
     type TestResults,
 } from '../tests/results/TestResults.ts'
-import type { TestManager } from './TestManager.ts'
+import { sounds } from '../audio/sounds.ts'
 
 export class TestResultsManager {
     #resultsOverlayElement: HTMLDivElement
     #numberAnimator: number = -1
 
-    constructor ( testManager: TestManager ) {
+    constructor () {
         const uncheckedResultsElement = document.querySelector( '#testResultsOverlay' )
         if ( !uncheckedResultsElement )
             throw Error( 'Test results element does not exist.' )
@@ -29,7 +29,7 @@ export class TestResultsManager {
         console.debug( 'showing results' )
 
         const rank = document.querySelector( '#testResultsOverlay .rank' ) as HTMLHeadingElement
-        const difficulty = document.querySelector( '#testResultsOverlay .difficulty span' ) as HTMLSpanElement
+        const comment = document.querySelector( '#testResultsOverlay .comment span' ) as HTMLSpanElement
 
         const ratingPercentage = document.querySelector( '#testResultsOverlay .achievedProgressBox p span' ) as HTMLSpanElement
         const progressBox = document.querySelector( '#testResultsOverlay .achievedProgressBox' ) as HTMLDivElement
@@ -53,17 +53,20 @@ export class TestResultsManager {
 
         const username = document.querySelector( '#testResultsUsernameText span' ) as HTMLSpanElement
 
-        // set values
-
+        // set the values
         this.#resultsOverlayElement.style.cssText = `--ranking-color: ${ results.rank.color };`
 
+        comment.innerText = results.rank.comments[ Math.round( Math.random() * ( results.rank.comments.length - 1 ) ) ]
+
         rank.innerText = results.rank.name
-
-
         progressBox.style.width = `calc( ${ results.rating } / 100 * 15vw )`
 
         this.#numberAnimator = setInterval( () => {
-            ratingPercentage.innerText = `${ Math.round( progressBox.offsetWidth / ( 0.15 * window.innerWidth ) * 100 ) }`
+            const computed = Math.round( progressBox.offsetWidth / ( 0.15 * window.innerWidth ) * 100 )
+            if ( parseInt( ratingPercentage.innerText ) != computed )
+                sounds.score.play()
+
+            ratingPercentage.innerText = `${ computed }`
         }, 1 )
 
         setTimeout( () => clearInterval( this.#numberAnimator ), 5000 )
