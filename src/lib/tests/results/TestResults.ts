@@ -3,7 +3,7 @@ import type { TestDifficulty } from '../TestDifficultyEntries.ts'
 export type TestRankDisplayProperties = {
     name: string
     color: string
-    comments
+    comments: Array< string >
 }
 
 export const TestRanks: Record< string, TestRankDisplayProperties > = {
