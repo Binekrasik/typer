@@ -17,6 +17,14 @@ export class TestResultsManager {
         this.#resultsOverlayElement = uncheckedResultsElement as HTMLDivElement
     }
 
+    clearResults () {
+        ( document.querySelector( '#testResultsOverlay .achievedProgressBox' ) as HTMLDivElement ).style.width = '0%'
+        document.querySelectorAll( '#testResultsOverlay .progressRankingBar div' ).forEach( entry => {
+            const element = entry as HTMLDivElement
+            element.style.width = '0%'
+        })
+    }
+
     showResults ( results: TestResults ) {
         console.debug( 'showing results' )
 
@@ -62,17 +70,16 @@ export class TestResultsManager {
 
         // todo: allow for dynamic changes of rank ratings
         rankBars.ss.style.width = '1%'
-        rankBars.s.style.width = '4%'
-        rankBars.a.style.width = '10%'
-        rankBars.b.style.width = '15%'
-        rankBars.c.style.width = '20%'
-        rankBars.d.style.width = '50%'
-
         rankBars.ss.style.background = TestRanks.ss.color
+        rankBars.s.style.width = '4%'
         rankBars.s.style.background = TestRanks.s.color
+        rankBars.a.style.width = '10%'
         rankBars.a.style.background = TestRanks.a.color
+        rankBars.b.style.width = '15%'
         rankBars.b.style.background = TestRanks.b.color
+        rankBars.c.style.width = '20%'
         rankBars.c.style.background = TestRanks.c.color
+        rankBars.d.style.width = '50%'
         rankBars.d.style.background = TestRanks.d.color
 
         statsTexts.speed.innerText = `${ results.speed }`
@@ -88,6 +95,8 @@ export class TestResultsManager {
 
     hideResults () {
         this.#resultsOverlayElement.setAttribute( 'data-visible', 'false' )
+        this.clearResults()
+
         clearInterval( this.#numberAnimator )
     }
 
