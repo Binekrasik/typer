@@ -5,4 +5,14 @@
 
 #currentTest {
     position: relative;
+
+    &[ data-testVisible="false" ] {
+        #testCaret {
+            opacity: 0;
+        }
+
+        #testWritingArea {
+            opacity: 0;
+        }
+    }
 }

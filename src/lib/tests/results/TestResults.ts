@@ -12,12 +12,16 @@ export const TestRanks: Record< string, TestRankDisplayProperties > = {
     b: { name: 'B', color: '#faff5a' },
     c: { name: 'C', color: '#ff8c53' },
     d: { name: 'D', color: '#ff5252' },
-    f: { name: 'F', color: '#500699' },
+    f: { name: 'F', color: '#902c2c' },
 }
 
 export interface TestResults {
     rank: TestRankDisplayProperties
     rating: number
     difficulty: TestDifficulty
-    dateTimestamp: number
+    duration: number
+    length: number
+    speed: number
+    accuracy: number
+    username: string
 }

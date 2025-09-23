@@ -24,7 +24,7 @@
   height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center;;
   backdrop-filter: blur(20px);
   transition: all 1s cubic-bezier(0.2, 1, 0, 1);
 }
