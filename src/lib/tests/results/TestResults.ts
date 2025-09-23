@@ -46,7 +46,10 @@ export const TestRanks: Record< string, TestRankDisplayProperties > = {
         name: 'D',
         color: '#ff5252',
         comments: [
-
+            "nice but try again",
+            "you can do better",
+            "hey, it's fine",
+            "decent."
         ],
     },
     f: {
@@ -56,7 +59,9 @@ export const TestRanks: Record< string, TestRankDisplayProperties > = {
             "you're bad bro",
             "type faster",
             "just put the fries in the bag",
-            "what a newbie you are"
+            "what a newbie you are",
+            "try again",
+            "you're not even trying",
         ],
     },
 }
