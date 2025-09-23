@@ -25,7 +25,7 @@ const inputManager = new InputManager()
 const testManager = new TestManager( settingsManager )
 const scoreManager = new ScoreManager( progressManager, TestDifficultyEntries.average )
 const difficultySelectionManager = new DifficultySelectionManager( scoreManager )
-const resultsManager = new TestResultsManager( testManager )
+const resultsManager = new TestResultsManager()
 
 const removeLoadingOverlay = () => {
     const loadingOverlay = document.querySelector( '#loaderOverlay' ) as HTMLDivElement
