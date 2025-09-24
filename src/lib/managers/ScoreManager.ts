@@ -56,11 +56,11 @@ export class ScoreManager {
     getDeltaTyped = () => Date.now() - this.#lastTypedTimestamp
 
     calculatePenalty ( deltaTyped?: number ) {
-        let penalty = this.#difficulty.penaltyMultiplier * ( deltaTyped ? deltaTyped : this.getDeltaTyped() / 50 )
-        penalty = penalty < 0.1 ? 0.1 : penalty
-        return penalty
+        const delta = deltaTyped ?? this.getDeltaTyped()
+
+        return this.#difficulty.penaltyMultiplier * ( delta / 100 > 10 ? 10 : delta / 100 )
     }
 
     updateLastTypedTimestamp = () => this.#lastTypedTimestamp = Date.now()
-    getRewardValue = ( maxProgressValue: number ) => this.#difficulty.rewardMultiplier * maxProgressValue * 0.01
+    getRewardValue = ( maxProgressValue: number ) => ( this.#difficulty.rewardMultiplier * maxProgressValue * 0.01 ) / ( this.#progressManager.getValue() * 0.05 )
 }
