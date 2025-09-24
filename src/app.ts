@@ -70,7 +70,7 @@ inputManager.addListener( 'character', character => {
 
     if ( testManager.typeCharacter( character ) ) {
         scoreManager.updateLastTypedTimestamp()
-        progressManager.increaseValue( scoreManager.getRewardValue( progressManager.getMaxValue() ) )
+        progressManager.increaseValue( scoreManager.getRewardValue() )
     } else progressManager.decreaseValue( scoreManager.getIncorrectCharacterPenalty() )
 })
 
