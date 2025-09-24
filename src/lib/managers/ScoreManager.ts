@@ -62,5 +62,5 @@ export class ScoreManager {
     }
 
     updateLastTypedTimestamp = () => this.#lastTypedTimestamp = Date.now()
-    getRewardValue = ( maxProgressValue: number ) => this.#difficulty.rewardMultiplier / ( this.#progressManager.getValue() * 0.05 )
+    getRewardValue = () => this.#difficulty.rewardMultiplier / ( this.#progressManager.getValue() * 0.05 )
 }
