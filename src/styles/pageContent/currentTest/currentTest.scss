@@ -3,6 +3,18 @@
 @forward 'testWritingArea';
 @forward 'testResultsOverlay';
 
+@use '../../values/easings' as easings;
+
 #currentTest {
     position: relative;
+
+    #testWritingArea {
+        transition: opacity easings.$easeSmooth .5s;
+    }
+
+    &[ data-testVisible="false" ] {
+        #testCaret, #testWritingArea {
+            opacity: 0;
+        }
+    }
 }

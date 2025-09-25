@@ -81,7 +81,7 @@ export class TestManager {
             exec: ( value: { id: string, value: any } ) => {
                 if ( value.id === 'wordCount' ) {
                     if ( this.#testState.total.test.start !== -1 )
-                        this.finishTest()
+                        this.finishTest( false )
 
                     this.regenerateTest( value.value )
                 }
@@ -263,7 +263,7 @@ export class TestManager {
             this.#testState.total.charactersWritten.correct++
 
             if ( this.#testState.total.charactersWritten.correct === this.#testState.total.test.length )
-                this.finishTest()
+                this.finishTest( false )
 
             return true
         }
@@ -278,22 +278,19 @@ export class TestManager {
         return false
     }
 
-    finishTest () {
+    finishTest ( silent: boolean ) {
         this.#testState.total.test.end = Date.now()
         this.#testState.total.test.total = this.#testState.total.test.end - this.#testState.total.test.start
         this.#testState.total.test.result = this.#testState.total.charactersWritten.correct === this.#testState.total.test.length ? 'succeeded' : 'failed'
 
         this.#needsRegenerating = true
 
-        this.callListeners( 'finish' )
+        if ( !silent ) this.callListeners( 'finish' )
 
         // this.toggleTestResetNotice( true )
     }
 
-    /* toggleTestResetNotice ( visible?: boolean ) {
-        const resetNoticeElement = document.querySelector( '#testResetNotice' ) as HTMLDivElement
-        resetNoticeElement.setAttribute( 'data-visible', typeof visible !== 'undefined' ? `${ visible }` : resetNoticeElement.getAttribute( 'data-visible' ) == 'true' ? 'false' : 'true' )
-    } */
+    setTestVisible = ( visible: boolean ) => document.querySelector( '#currentTest' )!.setAttribute( 'data-testVisible', `${ visible }` )
 
     // --- - - - - - - - ---
     //       UTILITIES

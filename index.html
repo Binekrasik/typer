@@ -67,53 +67,62 @@
 
     <div id="app">
         <div id="pageContent">
-            <div id="testOptions">
-                <div id="difficultyOptionIndicator"></div>
-                <div id="testDifficultySelection"></div>
-            </div>
+            <div id="testHeader">
+                <div id="testOptions">
+                    <div id="difficultyOptionIndicator"></div>
+                    <div id="testDifficultySelection"></div>
+                </div>
 
-            <div id="currentTestInfo">
-                <div id="testProgressBar">
-                    <div class="progressValue"></div>
+                <div id="currentTestInfo">
+                    <div id="testProgressBar">
+                        <div class="progressValue"></div>
+                    </div>
                 </div>
             </div>
 
-            <div id="currentTest">
-                <div id="testResultsOverlay">
-                    <div class="ranking">
-                        <div class="rankBox">
-                            <h1 class="rank"></h1>
-                            <h2 class="rating"></h2>
+            <div id="currentTest" data-testVisible="true">
+                <div id="testResultsOverlay" data-visible="false">
+                    <div class="resultsBox">
+                        <div class="ranking">
+                            <div class="rankBox">
+                                <h1 class="rank"></h1>
+                                <h2 class="comment">// <span></span></h2>
+                            </div>
+
+                            <div class="progressBox">
+                                <div class="achievedProgressBox">
+                                    <p><span></span>%</p>
+                                    <div class="achievedProgressBar"></div>
+                                </div>
+
+                                <div class="progressRankingBar">
+                                    <div class="rankF"></div>
+                                    <div class="rankD"></div>
+                                    <div class="rankC"></div>
+                                    <div class="rankB"></div>
+                                    <div class="rankA"></div>
+                                    <div class="rankS"></div>
+                                    <div class="rankSS"></div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="progressBox">
-                            <div class="achievedProgressBox">
-                                <p>Nah%</p>
-                                <div class="achievedProgressBar"></div>
-                            </div>
-
-                            <div class="progressRankingBar">
-                                <div class="rankSS"></div>
-                                <div class="rankS"></div>
-                                <div class="rankA"></div>
-                                <div class="rankB"></div>
-                                <div class="rankC"></div>
-                                <div class="rankD"></div>
-                                <div class="rankF"></div>
-                            </div>
+                        <div class="stats">
+                            <h2 id="testResultsSpeedText">speed: <span></span> wpm</h2>
+                            <h2 id="testResultsAccuracyText">accuracy: <span></span>%</h2>
+                            <h2 id="testResultsDurationText">duration: <span></span>s</h2>
+                            <h2 id="testResultsLengthText">length: <span></span> words</h2>
+                            <h2 id="testResultsDifficultyText">difficulty: <span></span></h2>
+                            <p id="testResultsUsernameText">@<span></span></p>
                         </div>
                     </div>
 
-                    <div class="stats">
-                        <p id="testResultsSpeedText"></p>
-                        <p id="testResultsAccuracyText"></p>
-                        <p id="testResultsDurationText"></p>
-                    </div>
-
-                    <p>reset test using <span>ctrl + shift + backspace</span></p>
+                    <p class="resetNotice">reset test using <span>ctrl + shift + backspace</span></p>
                 </div>
                 <div id="testCaret"></div>
-                <div id="testWritingArea"></div>
+                <div class="writingAreaBox">
+                    <div id="testWritingArea"></div>
+                </div>
             </div>
         </div>
     </div>

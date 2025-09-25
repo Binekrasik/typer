@@ -1,28 +1,153 @@
 @use '../../values/colors' as colors;
+@use '../../values/easings' as easings;
 
 #testResultsOverlay {
+    --ranking-color: #b7f7a3;
+
     position: absolute;
 
+    opacity: 0;
+
+    top: 0;
+    left: 0;
     z-index: -1;
-    display: none;
 
     width: 100%;
-    height: 100%;
+    min-height: 100%;
 
-    background: colors.$background;
+    transition: opacity easings.$easeSmooth .5s;
 
-    h1 {
-        font-size: 6rem;
-        font-weight: 600;
-    }
-
-    h2 {
-        color: rgba( colors.$primary, 1 );
-        font-size: 1.5rem;
-        font-weight: 600;
-    }
-
-    /* &[ data-visible="true" ] {
+    &[ data-visible="true" ] {
+        opacity: 1;
         z-index: 1;
-    } */
+    }
+
+    .resultsBox {
+        display: grid;
+        grid-column-gap: 4rem;
+        grid-template-columns: repeat( 2, 1fr );
+
+        .ranking {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+
+            width: fit-content;
+            place-self: flex-end;
+
+            color: hsl( from var( --ranking-color ) h s 90 );
+
+            .rankBox {
+                display: flex;
+                flex-direction: column;
+                width: fit-content;
+
+                .rank {
+                    font-family: 'WindSong', serif;
+                    font-size: 86px;
+                    font-weight: 500;
+                    line-height: 61px;
+                    margin-top: 1rem;
+                    width: fit-content;
+                    color: var( --ranking-color );
+                }
+
+                .comment {
+                    font-style: italic;
+                    font-weight: 600;
+                    width: fit-content;
+                }
+            }
+            .progressBox {
+                width: 15vw;
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+
+                .achievedProgressBox {
+                    // width: calc( 90 / 100 * 15vw );
+                    width: 0;
+                    text-align: right;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+
+                    transition: width easings.$easeSmooth 3s;
+
+                    p {
+                        font-style: italic;
+                        font-weight: 600;
+                        font-size: 16px;
+                    }
+
+                    .achievedProgressBar {
+                        width: 100%;
+                        height: 5px;
+
+                        content: '10' + 10px;
+
+                        background: hsl( from var( --ranking-color ) h s 90 );;
+                        transform: skewX( -25deg );
+                    }
+                }
+                .progressRankingBar {
+                    display: flex;
+                    width: 15vw;
+
+                    transform: skewX( -25deg );
+
+                    div {
+                        height: 20px;
+                        transition: width easings.$easeSmooth 1s;
+                    }
+
+                    .rankSS { width: 0; background: #ddd; transform: translateX( -6px ); }
+                    .rankS { width: 0; background: #bbb;  transform: translateX( -5px ); }
+                    .rankA { width: 0; background: #999; transform: translateX( -3px ); }
+                    .rankB { width: 0; background: #777; transform: translateX( -2px ); }
+                    .rankC { width: 0; background: #555; transform: translateX( -1px ); }
+                    .rankD { width: 0; background: #333; }
+                }
+            }
+        }
+    }
+
+    .stats {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        --text-color: hsl( from var( --ranking-color ) h s 90 );
+
+        h2 {
+            font-weight: 600;
+            font-style: italic;
+            font-size: 24px;
+            color: var( --text-color );
+            white-space: nowrap;
+        }
+
+        p {
+            font-weight: 600;
+            font-style: italic;
+            font-size: 16px;
+            color: rgb( from var( --text-color ) r g b / .5 );
+            margin-top: 10px;
+        }
+    }
+
+    .resetNotice {
+        --text-color: hsl( from var( --ranking-color ) h s 90 );
+
+        margin: 30px 0 0;
+        text-align: center;
+
+        font-size: 18px;
+        font-weight: 600;
+
+        color: rgb( from var( --text-color ) r g b / .5 );
+
+        span {
+            color: var( --text-color );
+        }
+    }
 }

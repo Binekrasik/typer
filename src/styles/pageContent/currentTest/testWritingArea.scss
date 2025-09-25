@@ -2,12 +2,20 @@
 @use '../../values/easings' as easings;
 
 #app {
+    .writingAreaBox {
+        width: 50vw;
+        display: flex;
+        justify-content: center;
+    }
+
     #testWritingArea {
         display: flex;
         flex-wrap: wrap;
         row-gap: 25px;
 
-        width: 50vw;
+        &[ data-visible="false" ] {
+            opacity: 0;
+        }
 
         span {
             font-family: 'Parkinsans', Helvetica, sans-serif;

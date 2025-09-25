@@ -25,9 +25,7 @@ const inputManager = new InputManager()
 const testManager = new TestManager( settingsManager )
 const scoreManager = new ScoreManager( progressManager, TestDifficultyEntries.average )
 const difficultySelectionManager = new DifficultySelectionManager( scoreManager )
-new TestResultsManager()
-
-const wordCount = settingsManager.get( 'wordCount' ).value
+const resultsManager = new TestResultsManager()
 
 const removeLoadingOverlay = () => {
     const loadingOverlay = document.querySelector( '#loaderOverlay' ) as HTMLDivElement
@@ -38,10 +36,14 @@ const resetTest = () => {
     console.debug( 'resetting test' )
 
     if ( testManager.getTestState().total.test.start !== -1 )
-        testManager.finishTest()
+        testManager.finishTest( true )
 
+    resultsManager.hideResults()
+    testManager.setTestVisible( true )
+
+    difficultySelectionManager.unlockSelection()
     scoreManager.stopPenalizer()
-    testManager.regenerateTest( wordCount )
+    testManager.regenerateTest( settingsManager.get( 'wordCount' ).value )
     progressManager.reset()
     progressManager.setMaxValue( testManager.getTestLength() )
     difficultySelectionManager.syncDifficultyIndicator()
@@ -68,7 +70,7 @@ inputManager.addListener( 'character', character => {
 
     if ( testManager.typeCharacter( character ) ) {
         scoreManager.updateLastTypedTimestamp()
-        progressManager.increaseValue( scoreManager.getRewardValue( progressManager.getMaxValue() ) )
+        progressManager.increaseValue( scoreManager.getRewardValue() )
     } else progressManager.decreaseValue( scoreManager.getIncorrectCharacterPenalty() )
 })
 
@@ -89,7 +91,7 @@ progressManager.addListener({
     type: 'valueChange',
     exec: () => {
         if ( progressManager.getValue() === 0 && testManager.getTestState().total.test.start !== -1 )
-            testManager.finishTest()
+            testManager.finishTest( false )
     }
 })
 
@@ -119,12 +121,18 @@ testManager.addListener({
         difficultySelectionManager.unlockSelection()
         scoreManager.stopPenalizer()
 
-        /* resultsManager.showResults({
+        testManager.setTestVisible( false )
+
+        resultsManager.showResults({
             rank: TestResultsManager.getRank( progressManager.getPercentageValue() ),
-            rating: progressManager.getPercentageValue(),
+            rating: Math.round( progressManager.getPercentageValue() ),
             difficulty: scoreManager.getDifficulty(),
-            dateTimestamp: Date.now(),
-        }) */
+            duration: state.total.test.total / 1000,
+            length: settingsManager.get( 'wordCount' ).value,
+            speed: 0,
+            accuracy: Math.round( state.total.charactersWritten.correct / state.total.charactersWritten.total * 100 ),
+            username: 'anonymous',
+        })
 
         Debug.setContent(`
             <p style="color: ${ state.total.test.result === 'succeeded' ? '#0f0' : '#f00' }">test ${ state.total.test.result }</p>

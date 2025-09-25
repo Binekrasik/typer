@@ -29,7 +29,7 @@ export class ScoreManager {
             <p>max delta: ${ this.#difficulty.maxDelta } (~${ ( 1000 / this.#difficulty.maxDelta * 60 ) / 5 } wpm)</p>
             <p>interval: ${ this.#difficulty.penalizationIntervalDelay }</p>
             <p>incorrect penalty: ${ this.getIncorrectCharacterPenalty() }</p>
-            <p>reward multiplier: ${ this.getRewardValue( 100 ) }</p>
+            <p>reward multiplier: ${ this.getRewardValue() }</p>
             <p>minimum timeout penalty (${ this.#difficulty.maxDelta }): ${ this.calculatePenalty( this.#difficulty.maxDelta ) }</p>
         `)
     }
@@ -56,11 +56,11 @@ export class ScoreManager {
     getDeltaTyped = () => Date.now() - this.#lastTypedTimestamp
 
     calculatePenalty ( deltaTyped?: number ) {
-        let penalty = this.#difficulty.penaltyMultiplier * ( deltaTyped ? deltaTyped : this.getDeltaTyped() / 50 )
-        penalty = penalty < 0.1 ? 0.1 : penalty
-        return penalty
+        const delta = deltaTyped ?? this.getDeltaTyped()
+
+        return this.#difficulty.penaltyMultiplier * ( delta / 100 > 10 ? 10 : delta / 100 )
     }
 
     updateLastTypedTimestamp = () => this.#lastTypedTimestamp = Date.now()
-    getRewardValue = ( maxProgressValue: number ) => this.#difficulty.rewardMultiplier * maxProgressValue * 0.01
+    getRewardValue = () => this.#difficulty.rewardMultiplier / ( this.#progressManager.getValue() * 0.05 )
 }
