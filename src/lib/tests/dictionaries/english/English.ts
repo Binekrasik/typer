@@ -13,7 +13,7 @@ export class English extends Dictionary {
                 random--
             } else random++
 
-        this. #lastIndex = random
+        this.#lastIndex = random
         return this.#currentDataset.words[ random ].toLowerCase()
     }
 
