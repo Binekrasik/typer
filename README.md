@@ -12,3 +12,8 @@ a simple, beautiful and unstable typing experience.
 1. install the dependencies by running `bun i`.
 
 2. run `bun dev` or `bun run dev` and visit http://localhost:3000.
+
+## license
+
+Copyright (c) 2025 binekrasik
+This project and all of its files are subject to the license specified in the LICENSE file unless stated otherwise.
