@@ -61,15 +61,40 @@ export class TestResultsManager {
         rank.innerText = results.rank.name
         progressBox.style.width = `calc( ${ results.rating } / 100 * 15vw )`
 
+        let rankHit = -1
+
         this.#numberAnimator = setInterval( () => {
             const computed = Math.round( progressBox.offsetWidth / ( 0.15 * window.innerWidth ) * 100 )
             if ( parseInt( ratingPercentage.innerText ) != computed )
                 sounds.score.play()
 
             ratingPercentage.innerText = `${ computed }`
+
+            if (computed >= 99 && rankHit < 6) {
+                sounds.score_ss.play()
+                rankHit++
+            } else if (computed >= 96 && rankHit < 5) {
+                sounds.score_s.play()
+                rankHit++
+            } else if (computed >= 90 && rankHit < 4) {
+                sounds.score_a.play()
+                rankHit++
+            } else if (computed >= 85 && rankHit < 3) {
+                sounds.score_b.play()
+                rankHit++
+            } else if (computed >= 80 && rankHit < 2) {
+                sounds.score_c.play()
+                rankHit++
+            } else if (computed >= 50 && rankHit < 1) {
+                sounds.score_d.play()
+                rankHit++
+            } else if (rankHit < 0) {
+                sounds.score_f.play()
+                rankHit++
+            }
         }, 1 )
 
-        setTimeout( () => clearInterval( this.#numberAnimator ), 5000 )
+        setTimeout( () => clearInterval( this.#numberAnimator ), 6500 )
 
         // todo: allow for dynamic changes of rank ratings
         rankBars.ss.style.width = '1%'
