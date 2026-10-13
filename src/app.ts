@@ -43,7 +43,7 @@ const resetTest = () => {
 
     difficultySelectionManager.unlockSelection()
     scoreManager.stopPenalizer()
-    testManager.regenerateTest( settingsManager.get( 'wordCount' ).value )
+    testManager.regenerateTest( settingsManager.get( 'characterCount' ).value )
     progressManager.reset()
     progressManager.setMaxValue( testManager.getTestLength() )
     difficultySelectionManager.syncDifficultyIndicator()
@@ -128,7 +128,7 @@ testManager.addListener({
             rating: Math.round( progressManager.getPercentageValue() ),
             difficulty: scoreManager.getDifficulty(),
             duration: state.total.test.total / 1000,
-            length: settingsManager.get( 'wordCount' ).value,
+            length: settingsManager.get( 'characterCount' ).value,
             speed: 0,
             accuracy: Math.round( state.total.charactersWritten.correct / state.total.charactersWritten.total * 100 ),
             username: 'anonymous',

@@ -1,4 +1,4 @@
-import { Dictionary, type DictionaryWordsDataset } from '../Dictionary.ts'
+import { Dictionary, type DictionaryWordsDataset, type WordLengthRange } from '../Dictionary.ts'
 import type { KeyPosition, Layout } from '../../layouts/Layout.ts'
 import { WeightedPool } from '../../../utils/WeightedPool.ts'
 import { english10k } from './english10k.ts'
@@ -30,9 +30,12 @@ const keyTransitionWeight = ( from: KeyPosition, to: KeyPosition | null ) => {
 
 export class English extends Dictionary {
     #currentDataset: DictionaryWordsDataset = english10k
+    #layout: Layout
     #words: Array< string >
     #anyWord = new WeightedPool< WordPool >()
     #followingWords = new Map< string, WeightedPool< WordPool > >()
+    // words grouped by their first letter, then indexed by their length
+    #wordsByFirstLetterAndLength = new Map< string, Array< WordPool > >()
 
     #wordsPicked = 0
     #lastPickedAt: Float64Array
@@ -41,6 +44,7 @@ export class English extends Dictionary {
     constructor ( layout: Layout ) {
         super()
 
+        this.#layout = layout
         this.#words = this.#currentDataset.words.map( word => word.toLowerCase() )
         this.#lastPickedAt = new Float64Array( this.#words.length ).fill( -Infinity )
 
@@ -52,7 +56,17 @@ export class English extends Dictionary {
             if ( !pool )
                 wordsByFirstLetter.set( word[ 0 ], pool = new WeightedPool() )
 
-            pool.add( rank, ( rank + 1 ) ** -RANK_FALLOFF * ( word.length > LONG_WORD_LENGTH ? LONG_WORD_WEIGHT : 1 ) )
+            let poolsByLength = this.#wordsByFirstLetterAndLength.get( word[ 0 ] )
+            if ( !poolsByLength )
+                this.#wordsByFirstLetterAndLength.set( word[ 0 ], poolsByLength = [] )
+
+            let lengthPool = poolsByLength[ word.length ]
+            if ( !lengthPool )
+                poolsByLength[ word.length ] = lengthPool = new WeightedPool()
+
+            const weight = ( rank + 1 ) ** -RANK_FALLOFF * ( word.length > LONG_WORD_LENGTH ? LONG_WORD_WEIGHT : 1 )
+            pool.add( rank, weight )
+            lengthPool.add( rank, weight )
             lastLetters.add( word[ word.length - 1 ] )
         })
 
@@ -73,8 +87,10 @@ export class English extends Dictionary {
         })
     }
 
-    nextWord () {
-        const candidates = this.#followingWords.get( this.#lastLetter ) ?? this.#anyWord
+    nextWord ( length?: WordLengthRange ) {
+        const candidates = length
+            ? this.candidatesWithin( length )
+            : this.#followingWords.get( this.#lastLetter ) ?? this.#anyWord
         let attempts = 0
         let index: number
 
@@ -87,5 +103,25 @@ export class English extends Dictionary {
         this.#lastLetter = word[ word.length - 1 ]
 
         return word
+    }
+
+    private candidatesWithin ( length: WordLengthRange ) {
+        const from = this.#layout.locateCharacter( this.#lastLetter )
+        const candidates = new WeightedPool< WordPool >()
+
+        this.#wordsByFirstLetterAndLength.forEach( ( poolsByLength, firstLetter ) => {
+            const transitionWeight = from ? keyTransitionWeight( from, this.#layout.locateCharacter( firstLetter ) ) : 1
+
+            for ( let wordLength = length.min; wordLength <= length.max; wordLength++ ) {
+                const pool = poolsByLength[ wordLength ]
+                if ( pool )
+                    candidates.add( pool, pool.getTotalWeight() * transitionWeight )
+            }
+        })
+
+        if ( candidates.getTotalWeight() === 0 )
+            throw Error( `Couldn't find any word between ${ length.min } and ${ length.max } letters long.` )
+
+        return candidates
     }
 }

@@ -48,7 +48,8 @@ export class SettingsManager {
         if ( !tempSettings )
             return this.loadDefaultSettings()
 
-        return JSON.parse( tempSettings as string ) as SettingsHolder
+        // settings saved before a setting existed still need its default value
+        return { ...this.loadDefaultSettings(), ...JSON.parse( tempSettings as string ) as SettingsHolder }
     }
 
     loadDefaultSettings = () => defaultSettings

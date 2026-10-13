@@ -6,6 +6,11 @@ import type { TestState } from '../tests/TestState.ts'
 import { arrayYoink } from '../utils/arrays.ts'
 import type { SettingsManager } from './SettingsManager.ts'
 
+// the rest of the test is filled by a single word once it's at most this long
+const EXACT_FIT_LENGTH = 8
+// space and letters left over for the words after, so the test never ends on a one letter word
+const FOLLOWING_WORDS_RESERVE = 3
+
 type TestEventType = 'finish' | 'start' | 'generate'
 type TestEventListenerExec = () => void
 
@@ -87,7 +92,7 @@ export class TestManager {
         settingsManager.addListener({
             type: 'valuechange',
             exec: ( value: { id: string, value: any } ) => {
-                if ( value.id === 'wordCount' ) {
+                if ( value.id === 'characterCount' ) {
                     if ( this.#testState.total.test.start !== -1 )
                         this.finishTest( false )
 
@@ -120,11 +125,11 @@ export class TestManager {
         this.#words = []
     }
 
-    regenerateTest ( wordCount: number ) {
+    regenerateTest ( characterCount: number ) {
         // this.toggleTestResetNotice( false )
 
         this.clearTest()
-        const testLength = this.appendRandomWords( wordCount )
+        const testLength = this.appendRandomWords( characterCount )
 
         this.#testState = {
             current: {
@@ -168,11 +173,17 @@ export class TestManager {
         return word.length + ( word.index != 0 ? 1 : 0 )
     }
 
-    appendRandomWords ( amount: number ): number {
+    appendRandomWords ( characterCount: number ): number {
         let tempLength = 0
 
-        for ( let i = 0; i < amount; i++ )
-            tempLength += this.appendWord( new WordEntity( this.#dictionary.nextWord(), i ) )
+        for ( let i = 0; tempLength < characterCount; i++ ) {
+            const available = characterCount - tempLength - ( i != 0 ? 1 : 0 )
+            const word = available <= EXACT_FIT_LENGTH
+                ? this.#dictionary.nextWord({ min: available, max: available })
+                : this.#dictionary.nextWord({ min: 1, max: available - FOLLOWING_WORDS_RESERVE })
+
+            tempLength += this.appendWord( new WordEntity( word, i ) )
+        }
 
         return tempLength
     }
