@@ -6,7 +6,7 @@ export const sounds: Record< SoundType, Howl > = {
     type: new Howl({ src: 'assets/audio/type.webm', volume: 0.2, preload: true }),
     error: new Howl({ src: 'assets/audio/error.wav', preload: true }),
     select: new Howl({ src: 'assets/audio/select.wav', volume: 0.2, preload: true }),
-    score: new Howl({ src: 'assets/audio/score.wav', volume: 0.1, preload: true }),
+    score: new Howl({ src: 'assets/audio/score.wav', volume: 0.025, preload: true }),
     score_f: new Howl({ src: 'assets/audio/score/f.ogg', volume: 0.2, preload: true }),
     score_d: new Howl({ src: 'assets/audio/score/d.ogg', volume: 0.2, preload: true }),
     score_c: new Howl({ src: 'assets/audio/score/c.ogg', volume: 0.2, preload: true }),

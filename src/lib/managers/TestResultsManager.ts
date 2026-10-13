@@ -3,7 +3,18 @@ import {
     TestRanks,
     type TestResults,
 } from '../tests/results/TestResults.ts'
-import { sounds } from '../audio/sounds.ts'
+import { type SoundType, sounds } from '../audio/sounds.ts'
+
+const rankSoundThresholds: ReadonlyArray< [ number, SoundType ] > = [
+    [ 1, 'score_d' ],
+    [ 50, 'score_c' ],
+    [ 70, 'score_b' ],
+    [ 85, 'score_a' ],
+    [ 95, 'score_s' ],
+    [ 100, 'score_ss' ],
+]
+
+const ratingAnimationDuration = 4000
 
 export class TestResultsManager {
     #resultsOverlayElement: HTMLDivElement
@@ -61,40 +72,35 @@ export class TestResultsManager {
         rank.innerText = results.rank.name
         progressBox.style.width = `calc( ${ results.rating } / 100 * 15vw )`
 
-        let rankHit = -1
+        cancelAnimationFrame( this.#numberAnimator )
 
-        this.#numberAnimator = setInterval( () => {
-            const computed = Math.round( progressBox.offsetWidth / ( 0.15 * window.innerWidth ) * 100 )
-            if ( parseInt( ratingPercentage.innerText ) != computed )
+        let animationStart: number | undefined
+        let displayedRating = parseInt( ratingPercentage.innerText )
+        let reachedRanks = 0
+
+        const animateRating = ( timestamp: number ) => {
+            animationStart ??= timestamp
+
+            const computed = Math.ceil( progressBox.offsetWidth / ( 0.15 * window.innerWidth ) * 100 )
+            if ( computed != displayedRating ) {
                 sounds.score.play()
-
-            ratingPercentage.innerText = `${ computed }`
-
-            if (computed >= 99 && rankHit < 6) {
-                sounds.score_ss.play()
-                rankHit++
-            } else if (computed >= 96 && rankHit < 5) {
-                sounds.score_s.play()
-                rankHit++
-            } else if (computed >= 90 && rankHit < 4) {
-                sounds.score_a.play()
-                rankHit++
-            } else if (computed >= 85 && rankHit < 3) {
-                sounds.score_b.play()
-                rankHit++
-            } else if (computed >= 80 && rankHit < 2) {
-                sounds.score_c.play()
-                rankHit++
-            } else if (computed >= 50 && rankHit < 1) {
-                sounds.score_d.play()
-                rankHit++
-            } else if (rankHit < 0) {
-                sounds.score_f.play()
-                rankHit++
+                ratingPercentage.innerText = `${ computed }`
+                displayedRating = computed
             }
-        }, 1 )
 
-        setTimeout( () => clearInterval( this.#numberAnimator ), 6500 )
+            const previouslyReachedRanks = reachedRanks
+            while ( reachedRanks < rankSoundThresholds.length && computed >= rankSoundThresholds[ reachedRanks ][ 0 ] )
+                reachedRanks++
+
+            // only the highest rank crossed this frame gets its sound, so skipped frames don't stack sounds
+            if ( reachedRanks > previouslyReachedRanks )
+                sounds[ rankSoundThresholds[ reachedRanks - 1 ][ 1 ] ].play()
+
+            if ( timestamp - animationStart < ratingAnimationDuration )
+                this.#numberAnimator = requestAnimationFrame( animateRating )
+        }
+
+        this.#numberAnimator = requestAnimationFrame( animateRating )
 
         // todo: allow for dynamic changes of rank ratings
         rankBars.ss.style.width = '1%'
@@ -125,7 +131,7 @@ export class TestResultsManager {
         this.#resultsOverlayElement.setAttribute( 'data-visible', 'false' )
         this.clearResults()
 
-        clearInterval( this.#numberAnimator )
+        cancelAnimationFrame( this.#numberAnimator )
     }
 
     static getRank ( rating: number ): TestRankDisplayProperties {
