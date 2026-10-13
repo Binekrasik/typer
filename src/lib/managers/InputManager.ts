@@ -114,5 +114,6 @@ export class InputManager {
         arrayYoink( this.#listeners, listener )
     }
 
+    getLayout = () => this.#activeLayout
     setLayout = ( layout: Layout ) => this.#activeLayout = layout
 }

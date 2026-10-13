@@ -1,5 +1,6 @@
 import type { Dictionary } from '../tests/dictionaries/Dictionary.ts'
 import { English } from '../tests/dictionaries/english/English.ts'
+import type { Layout } from '../tests/layouts/Layout.ts'
 import { WordEntity } from '../tests/WordEntity.ts'
 import type { TestState } from '../tests/TestState.ts'
 import { arrayYoink } from '../utils/arrays.ts'
@@ -52,7 +53,7 @@ export class TestManager {
     #words: Array< WordEntity > = []
     #needsRegenerating: boolean = false
 
-    constructor ( settingsManager: SettingsManager ) {
+    constructor ( settingsManager: SettingsManager, layout: Layout ) {
         // find the writing area
         const areaElement = document.querySelector( '#testWritingArea' )
         if ( !areaElement )
@@ -68,7 +69,7 @@ export class TestManager {
         this.#caretElement = caretElement as HTMLDivElement
 
         // hardcoded default dictionary for now
-        this.#dictionary = new English()
+        this.#dictionary = new English( layout )
         this.clearTest()
 
         window.addEventListener( 'resize', () => this.syncCaret({
