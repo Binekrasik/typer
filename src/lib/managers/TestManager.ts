@@ -165,7 +165,7 @@ export class TestManager {
 
     appendWord ( word: WordEntity ): number {
         let html = word.toSpanArray().join( '' )
-        html += `<span>&nbsp</span>`
+        html += `<span id="currentTest-word-${ word.index }-letter-${ word.length }" data-state="untyped">&nbsp</span>`
 
         this.#writingArea.innerHTML += `<div class="word" id="currentTest-word-${ word.index }">${ html }</div>`
         this.#words[ word.index ] = word
@@ -226,9 +226,22 @@ export class TestManager {
 
         const span = unchecked as HTMLSpanElement
 
+        // a wiggling word becomes the letter's offset parent, so sum the offsets up to the caret's own
+        let left = 0
+        let top = 0
+
+        for (
+            let element: HTMLElement | null = span;
+            element && element !== this.#caretElement.offsetParent;
+            element = element.offsetParent as HTMLElement | null
+        ) {
+            left += element.offsetLeft
+            top += element.offsetTop
+        }
+
         this.#caretElement.style.width = `${ span.offsetWidth }px`
-        this.#caretElement.style.left = `${ span.offsetLeft }px`
-        this.#caretElement.style.top = `${ span.offsetTop + span.offsetHeight - 3 }px`
+        this.#caretElement.style.left = `${ left }px`
+        this.#caretElement.style.top = `${ top + span.offsetHeight - 3 }px`
     }
 
     advanceCurrentWord () {
@@ -247,9 +260,7 @@ export class TestManager {
         ) return // fail gracefully
 
         this.#testState.current.character.index++
-        if ( this.didReachWordEnd() ) return
-
-        this.#testState.current.character.symbol = this.getCurrentCharacterSymbol()
+        this.#testState.current.character.symbol = this.didReachWordEnd() ? ' ' : this.getCurrentCharacterSymbol()
         this.syncCaret()
     }
 
@@ -269,6 +280,13 @@ export class TestManager {
 
         this.#testState.total.charactersWritten.total++
 
+        if ( input === ' ' && this.didReachWordEnd() ) {
+            this.advanceCurrentWord()
+            this.#testState.total.charactersWritten.correct++
+
+            return true
+        }
+
         if ( this.#testState.current.character.symbol === input ) {
             const currentUnchecked = document.querySelector( `#currentTest-word-${ this.#testState.current.word.index }-letter-${ this.#testState.current.character.index }` )
             if ( !currentUnchecked ) {
@@ -287,13 +305,6 @@ export class TestManager {
             return true
         }
 
-        if ( input === ' ' && this.didReachWordEnd() ) {
-            this.advanceCurrentWord()
-            this.#testState.total.charactersWritten.correct++
-
-            return true
-        }
-
         this.indicateError()
         return false
     }
@@ -307,7 +318,6 @@ export class TestManager {
         void wordElement.offsetWidth
         wordElement.setAttribute( 'data-error', 'true' )
 
-        // the space expected after a word has no letter to mark
         document.querySelector( `#currentTest-word-${ word.index }-letter-${ character.index }` )
             ?.setAttribute( 'data-error', 'true' )
     }
