@@ -77,6 +77,13 @@ export class TestManager {
             character: this.#testState.current.character.index,
         }))
 
+        this.#writingArea.addEventListener( 'animationend', event => {
+            const word = event.target as HTMLDivElement
+
+            word.removeAttribute( 'data-error' )
+            word.querySelectorAll( '[data-error]' ).forEach( letter => letter.removeAttribute( 'data-error' ) )
+        })
+
         settingsManager.addListener({
             type: 'valuechange',
             exec: ( value: { id: string, value: any } ) => {
@@ -276,7 +283,22 @@ export class TestManager {
             return true
         }
 
+        this.indicateError()
         return false
+    }
+
+    indicateError () {
+        const { word, character } = this.#testState.current
+        const wordElement = document.querySelector( `#currentTest-word-${ word.index }` ) as HTMLDivElement
+
+        // restart the wiggle when it's still playing
+        wordElement.removeAttribute( 'data-error' )
+        void wordElement.offsetWidth
+        wordElement.setAttribute( 'data-error', 'true' )
+
+        // the space expected after a word has no letter to mark
+        document.querySelector( `#currentTest-word-${ word.index }-letter-${ character.index }` )
+            ?.setAttribute( 'data-error', 'true' )
     }
 
     finishTest ( silent: boolean ) {

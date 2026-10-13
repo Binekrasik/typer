@@ -17,6 +17,10 @@
             opacity: 0;
         }
 
+        .word[ data-error='true' ] {
+            animation: errorWiggle .3s easings.$easeSmooth;
+        }
+
         span {
             font-family: 'Parkinsans', Helvetica, sans-serif;
             line-height: 100%;
@@ -26,9 +30,20 @@
             transition: color .25s easings.$easeSmooth;
             color: rgba( colors.$primary, .25 );
 
+            &[ data-error='true' ] {
+                color: rgba( colors.$error, .6 );
+            }
+
             &[ data-state='typed' ] {
                 color: colors.$primary;
             }
         }
     }
+}
+
+@keyframes errorWiggle {
+    20% { transform: translateX( -6px ); }
+    40% { transform: translateX( 5px ); }
+    60% { transform: translateX( -4px ); }
+    80% { transform: translateX( 2px ); }
 }
