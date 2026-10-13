@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# package managers
+bun.lock
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
