@@ -119,9 +119,12 @@ testManager.addListener({
 
         testManager.setTestVisible(false)
 
+        // the rank is taken from the rounded rating so it matches the displayed percentage
+        const rating = Math.round(progressManager.getPercentageValue())
+
         resultsManager.showResults({
-            rank: TestResultsManager.getRank(progressManager.getPercentageValue()),
-            rating: Math.round(progressManager.getPercentageValue()),
+            rank: TestResultsManager.getRank(rating),
+            rating,
             difficulty: scoreManager.getDifficulty(),
             duration: state.total.test.total / 1000,
             length: settingsManager.get('characterCount').value,

@@ -126,15 +126,14 @@ export class TestResultsManager {
         cancelAnimationFrame(this.#numberAnimator)
     }
 
+    // shares thresholds with the ranking bar, so the rank always matches the last segment that popped
     static getRank(rating: number): TestRankDisplayProperties {
-        if (rating >= 99) return TestRanks.ss
-        if (rating > 95) return TestRanks.s
-        if (rating > 85) return TestRanks.a
-        if (rating > 70) return TestRanks.b
-        if (rating > 50) return TestRanks.c
-        if (rating > 0) return TestRanks.d
-
         // basically 0% rating
-        return TestRanks.f
+        let rank = TestRanks.f
+
+        for (const segment of rankSegments)
+            if (rating >= segment.threshold) rank = TestRanks[segment.rank]
+
+        return rank
     }
 }
