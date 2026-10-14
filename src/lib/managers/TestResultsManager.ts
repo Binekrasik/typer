@@ -81,7 +81,7 @@ export class TestResultsManager {
         const animateRating = (timestamp: number) => {
             animationStart ??= timestamp
 
-            const computed = Math.ceil(progressBox.offsetWidth / (0.15 * window.innerWidth) * 100)
+            const computed = Math.trunc(progressBox.offsetWidth / (0.15 * window.innerWidth) * 100)
             if (computed != displayedRating) {
                 sounds.score.play()
                 ratingPercentage.innerText = `${computed}`
