@@ -12,40 +12,35 @@ import { SettingsManager } from './lib/managers/SettingsManager.ts'
 import { TestResultsManager } from './lib/managers/TestResultsManager.ts'
 import { sounds } from './lib/audio/sounds.ts'
 
-/*
- * I LOVE HUGE CODE MONOLITHS!!!
- * todo: rewrite this shit
- */
-
 let testsCount = 0
 
 const settingsManager = new SettingsManager()
 const progressManager = new ProgressBarManager()
 const inputManager = new InputManager()
-const testManager = new TestManager( settingsManager, inputManager.getLayout() )
-const scoreManager = new ScoreManager( progressManager, TestDifficultyEntries.average )
-const difficultySelectionManager = new DifficultySelectionManager( scoreManager )
+const testManager = new TestManager(settingsManager, inputManager.getLayout())
+const scoreManager = new ScoreManager(progressManager, TestDifficultyEntries.average)
+const difficultySelectionManager = new DifficultySelectionManager(scoreManager)
 const resultsManager = new TestResultsManager()
 
 const removeLoadingOverlay = () => {
-    const loadingOverlay = document.querySelector( '#loaderOverlay' ) as HTMLDivElement
-    loadingOverlay.setAttribute( 'data-loading', 'false' )
+    const loadingOverlay = document.querySelector('#loaderOverlay') as HTMLDivElement
+    loadingOverlay.setAttribute('data-loading', 'false')
 }
 
 const resetTest = () => {
-    console.debug( 'resetting test' )
+    console.debug('resetting test')
 
-    if ( testManager.getTestState().total.test.start !== -1 )
-        testManager.finishTest( true )
+    if (testManager.getTestState().total.test.start !== -1)
+        testManager.finishTest(true)
 
     resultsManager.hideResults()
-    testManager.setTestVisible( true )
+    testManager.setTestVisible(true)
 
     difficultySelectionManager.unlockSelection()
     scoreManager.stopPenalizer()
-    testManager.regenerateTest( settingsManager.get( 'characterCount' ).value )
+    testManager.regenerateTest(settingsManager.get('characterCount').value)
     progressManager.reset()
-    progressManager.setMaxValue( testManager.getTestLength() )
+    progressManager.setMaxValue(testManager.getTestLength())
     difficultySelectionManager.syncDifficultyIndicator()
 
     removeLoadingOverlay()
@@ -57,41 +52,41 @@ const resetTest = () => {
 window.onload = () => {
     resetTest()
 
-    setInterval( () => {
+    setInterval(() => {
         testManager.syncCaret()
         difficultySelectionManager.syncDifficultyIndicator()
-    }, 400 )
+    }, 400)
 }
 
-inputManager.addListener( 'character', character => {
-    if ( testManager.needsRegenerating() ) return
+inputManager.addListener('character', character => {
+    if (testManager.needsRegenerating()) return
 
     sounds.type.play()
 
-    if ( testManager.typeCharacter( character ) ) {
+    if (testManager.typeCharacter(character)) {
         scoreManager.updateLastTypedTimestamp()
-        progressManager.increaseValue( scoreManager.getRewardValue() )
-    } else progressManager.decreaseValue( scoreManager.getIncorrectCharacterPenalty() )
+        progressManager.increaseValue(scoreManager.getRewardValue())
+    } else progressManager.decreaseValue(scoreManager.getIncorrectCharacterPenalty())
 })
 
-inputManager.addListener( 'meta', key => {
+inputManager.addListener('meta', key => {
     if (
         key === 'Backspace'
-        && arrayIncludesAny( inputManager.activeModifierKeys, [ 'ControlLeft', 'ControlRight' ] )
-        && arrayIncludesAny( inputManager.activeModifierKeys, [ 'ShiftLeft', 'ShiftRight' ] )
+        && arrayIncludesAny(inputManager.activeModifierKeys, ['ControlLeft', 'ControlRight'])
+        && arrayIncludesAny(inputManager.activeModifierKeys, ['ShiftLeft', 'ShiftRight'])
     ) resetTest()
 
-    if ( key === 'Tab' )
-        if ( arrayIncludesAny( inputManager.activeModifierKeys, [ 'ShiftLeft', 'ShiftRight' ] ) ) {
-            difficultySelectionManager.cycleSelectedDifficulty( 'previous' )
-        } else difficultySelectionManager.cycleSelectedDifficulty( 'next' )
+    if (key === 'Tab')
+        if (arrayIncludesAny(inputManager.activeModifierKeys, ['ShiftLeft', 'ShiftRight'])) {
+            difficultySelectionManager.cycleSelectedDifficulty('previous')
+        } else difficultySelectionManager.cycleSelectedDifficulty('next')
 })
 
 progressManager.addListener({
     type: 'valueChange',
     exec: () => {
-        if ( progressManager.getValue() === 0 && testManager.getTestState().total.test.start !== -1 )
-            testManager.finishTest( false )
+        if (progressManager.getValue() === 0 && testManager.getTestState().total.test.start !== -1)
+            testManager.finishTest(false)
     }
 })
 
@@ -107,7 +102,7 @@ testManager.addListener({
     exec: () => {
         difficultySelectionManager.lockSelection()
 
-        progressManager.setValue( progressManager.getMaxValue() )
+        progressManager.setValue(progressManager.getMaxValue())
         scoreManager.startPenalizer()
     }
 })
@@ -121,27 +116,27 @@ testManager.addListener({
         difficultySelectionManager.unlockSelection()
         scoreManager.stopPenalizer()
 
-        testManager.setTestVisible( false )
+        testManager.setTestVisible(false)
 
         resultsManager.showResults({
-            rank: TestResultsManager.getRank( progressManager.getPercentageValue() ),
-            rating: Math.round( progressManager.getPercentageValue() ),
+            rank: TestResultsManager.getRank(progressManager.getPercentageValue()),
+            rating: Math.round(progressManager.getPercentageValue()),
             difficulty: scoreManager.getDifficulty(),
             duration: state.total.test.total / 1000,
-            length: settingsManager.get( 'characterCount' ).value,
+            length: settingsManager.get('characterCount').value,
             speed: 0,
-            accuracy: Math.round( state.total.charactersWritten.correct / state.total.charactersWritten.total * 100 ),
+            accuracy: Math.round(state.total.charactersWritten.correct / state.total.charactersWritten.total * 100),
             username: 'anonymous',
         })
 
         Debug.setContent(`
-            <p style="color: ${ state.total.test.result === 'succeeded' ? '#0f0' : '#f00' }">test ${ state.total.test.result }</p>
-            <p>test this session: ${ testsCount }</p>
-            <p>difficulty: ${ scoreManager.getDifficulty().name }</p>
-            <p>test duration: ${ state.total.test.total / 1000 }s</p>
-            <p>total characters: ${ state.total.charactersWritten.total }</p>
-            <p>correct characters: ${ state.total.charactersWritten.correct }</p>
-            <p>rating: ${ Math.round( progressManager.getPercentageValue() ) }%</p>
+            <p style="color: ${state.total.test.result === 'succeeded' ? '#0f0' : '#f00'}">test ${state.total.test.result}</p>
+            <p>test this session: ${testsCount}</p>
+            <p>difficulty: ${scoreManager.getDifficulty().name}</p>
+            <p>test duration: ${state.total.test.total / 1000}s</p>
+            <p>total characters: ${state.total.charactersWritten.total}</p>
+            <p>correct characters: ${state.total.charactersWritten.correct}</p>
+            <p>rating: ${Math.round(progressManager.getPercentageValue())}%</p>
         `)
     }
 })

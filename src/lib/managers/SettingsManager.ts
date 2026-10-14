@@ -9,20 +9,20 @@ export type SettingsEntry = {
 }
 
 export interface SettingsHolder {
-    [ id: string ]: SettingsEntry
+    [id: string]: SettingsEntry
 }
 
 export interface SettingsListener {
     type: SettingsEventType
-    exec: ( value: any ) => void
+    exec: (value: any) => void
 }
 
 export class SettingsManager {
     static readonly localStorageKey = 'typerSavedSettingsJsonObject'
     readonly #settings: SettingsHolder = {}
-    readonly #listeners: Array< SettingsListener > = []
+    readonly #listeners: Array<SettingsListener> = []
 
-    constructor () {
+    constructor() {
         this.#settings = this.loadSettings()
         this.saveCurrentSettings()
     }
@@ -31,39 +31,39 @@ export class SettingsManager {
     //        EVENTS
     // --- - - - - - - - ---
 
-    addListener = ( listener: SettingsListener ) => this.#listeners.push( listener )
-    removeListener = ( listener: SettingsListener ) => arrayYoink( this.#listeners, listener )
+    addListener = (listener: SettingsListener) => this.#listeners.push(listener)
+    removeListener = (listener: SettingsListener) => arrayYoink(this.#listeners, listener)
 
-    emitEvent = ( type: SettingsEventType, value: any ) =>
+    emitEvent = (type: SettingsEventType, value: any) =>
         this.#listeners
-            .filter( listener => listener.type === type )
-            .forEach( listener => listener.exec( value ) )
+            .filter(listener => listener.type === type)
+            .forEach(listener => listener.exec(value))
 
     // --- - - - - - - - ---
     //   LOADING & SAVING
     // --- - - - - - - - ---
 
-    loadSettings (): SettingsHolder {
-        let tempSettings = localStorage.getItem( SettingsManager.localStorageKey )
-        if ( !tempSettings )
+    loadSettings(): SettingsHolder {
+        let tempSettings = localStorage.getItem(SettingsManager.localStorageKey)
+        if (!tempSettings)
             return this.loadDefaultSettings()
 
         // settings saved before a setting existed still need its default value
-        return { ...this.loadDefaultSettings(), ...JSON.parse( tempSettings as string ) as SettingsHolder }
+        return { ...this.loadDefaultSettings(), ...JSON.parse(tempSettings as string) as SettingsHolder }
     }
 
     loadDefaultSettings = () => defaultSettings
-    saveCurrentSettings = () => localStorage.setItem( SettingsManager.localStorageKey, JSON.stringify( this.#settings ) )
+    saveCurrentSettings = () => localStorage.setItem(SettingsManager.localStorageKey, JSON.stringify(this.#settings))
 
-    get = ( id: string ) => {
-        console.debug( 'Settings object: ' )
-        console.debug( this.#settings )
-        console.debug( this.#settings[ id ] )
-        return this.#settings[ id ]
+    get = (id: string) => {
+        console.debug('Settings object: ')
+        console.debug(this.#settings)
+        console.debug(this.#settings[id])
+        return this.#settings[id]
     }
-    set ( id: string, value: any ) {
-        this.#settings[ id ] = value
+    set(id: string, value: any) {
+        this.#settings[id] = value
 
-        this.emitEvent( 'valuechange', { id, value } )
+        this.emitEvent('valuechange', { id, value })
     }
 }

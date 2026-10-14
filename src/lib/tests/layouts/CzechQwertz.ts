@@ -2,500 +2,500 @@ import { type CharacterMap, Layout } from './Layout.ts'
 
 // o.o
 const characters: CharacterMap = {
-    [ 'KeyA' ]: {
+    ['KeyA']: {
         regular: 'a',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'A',
                 'ShiftRight': 'A',
                 'AltRight': '~',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyB' ]: {
+    ['KeyB']: {
         regular: 'b',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'B',
                 'ShiftRight': 'B',
                 'AltRight': '{',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyC' ]: {
+    ['KeyC']: {
         regular: 'c',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'C',
                 'ShiftRight': 'C',
                 'AltRight': '&',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyD' ]: {
+    ['KeyD']: {
         regular: 'd',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'D',
                 'ShiftRight': 'D',
                 'AltRight': 'Đ',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyE' ]: {
+    ['KeyE']: {
         regular: 'e',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'E',
                 'ShiftRight': 'E',
                 'AltRight': '€',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyF' ]: {
+    ['KeyF']: {
         regular: 'f',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'F',
                 'ShiftRight': 'F',
                 'AltRight': '[',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyG' ]: {
+    ['KeyG']: {
         regular: 'g',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'G',
                 'ShiftRight': 'G',
                 'AltRight': ']',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyH' ]: {
+    ['KeyH']: {
         regular: 'h',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'H',
                 'ShiftRight': 'H',
                 'AltRight': '`',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyI' ]: {
+    ['KeyI']: {
         regular: 'i',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'I',
                 'ShiftRight': 'I',
                 'AltRight': '→',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyJ' ]: {
+    ['KeyJ']: {
         regular: 'j',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'J',
                 'ShiftRight': 'J',
                 'AltRight': '\'',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyK' ]: {
+    ['KeyK']: {
         regular: 'k',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'K',
                 'ShiftRight': 'K',
                 'AltRight': 'ł',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyL' ]: {
+    ['KeyL']: {
         regular: 'l',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'L',
                 'ShiftRight': 'L',
                 'AltRight': 'Ł',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyM' ]: {
+    ['KeyM']: {
         regular: 'm',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'M',
                 'ShiftRight': 'M',
                 'AltRight': '^',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyN' ]: {
+    ['KeyN']: {
         regular: 'n',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'N',
                 'ShiftRight': 'N',
                 'AltRight': '}',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyO' ]: {
+    ['KeyO']: {
         regular: 'o',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'O',
                 'ShiftRight': 'O',
                 'AltRight': 'ø',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyP' ]: {
+    ['KeyP']: {
         regular: 'p',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'P',
                 'ShiftRight': 'P',
                 'AltRight': 'þ',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyQ' ]: {
+    ['KeyQ']: {
         regular: 'q',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'Q',
                 'ShiftRight': 'Q',
                 'AltRight': '\\',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyR' ]: {
+    ['KeyR']: {
         regular: 'r',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'R',
                 'ShiftRight': 'R',
                 'AltRight': '¶',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyS' ]: {
+    ['KeyS']: {
         regular: 's',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'S',
                 'ShiftRight': 'S',
                 'AltRight': 'đ',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyT' ]: {
+    ['KeyT']: {
         regular: 't',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'T',
                 'ShiftRight': 'T',
                 'AltRight': 'ŧ',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyU' ]: {
+    ['KeyU']: {
         regular: 'u',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'U',
                 'ShiftRight': 'U',
                 'AltRight': '↓',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyV' ]: {
+    ['KeyV']: {
         regular: 'v',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'V',
                 'ShiftRight': 'V',
                 'AltRight': '@',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyW' ]: {
+    ['KeyW']: {
         regular: 'w',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'W',
                 'ShiftRight': 'W',
                 'AltRight': '|',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyX' ]: {
+    ['KeyX']: {
         regular: 'x',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'X',
                 'ShiftRight': 'X',
                 'AltRight': '#',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyY' ]: {
+    ['KeyY']: {
         regular: 'z',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'Z',
                 'ShiftRight': 'Z',
                 'AltRight': '←',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'KeyZ' ]: {
+    ['KeyZ']: {
         regular: 'y',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'Y',
                 'ShiftRight': 'Y',
                 'AltRight': '°',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Comma' ]: {
+    ['Comma']: {
         regular: ',',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '?',
                 'ShiftRight': '?',
                 'AltRight': '<',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Period' ]: {
+    ['Period']: {
         regular: '.',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': ':',
                 'ShiftRight': ':',
                 'AltRight': '>',
 
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Backquote' ]: {
+    ['Backquote']: {
         regular: ';',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '°',
                 'ShiftRight': '°',
                 'AltRight': '`',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Minus' ]: {
+    ['Minus']: {
         regular: '=',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '%',
                 'ShiftRight': '%',
                 'AltRight': '\\',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Equal' ]: {
+    ['Equal']: {
         regular: '-',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': 'ˇ',
                 'ShiftRight': 'ˇ',
                 'AltRight': '¯',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'BracketLeft' ]: {
+    ['BracketLeft']: {
         regular: 'ú',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '/',
                 'ShiftRight': '/',
                 'AltRight': '[',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'BracketRight' ]: {
+    ['BracketRight']: {
         regular: ')',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '(',
                 'ShiftRight': '(',
                 'AltRight': ']',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Semicolon' ]: {
+    ['Semicolon']: {
         regular: 'ů',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '"',
                 'ShiftRight': '"',
                 'AltRight': '$',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Quote' ]: {
+    ['Quote']: {
         regular: '§',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '!',
                 'ShiftRight': '!',
                 'AltRight': '\'',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Backslash' ]: {
+    ['Backslash']: {
         regular: '¨',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '\'',
                 'ShiftRight': '\'',
                 'AltRight': '\\',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Slash' ]: {
+    ['Slash']: {
         regular: '-',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '_',
                 'ShiftRight': '_',
                 'AltRight': '*',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Digit1' ]: {
+    ['Digit1']: {
         regular: '+',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '1',
                 'ShiftRight': '1',
                 'AltRight': '!',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Digit2' ]: {
+    ['Digit2']: {
         regular: 'ě',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '2',
                 'ShiftRight': '2',
                 'AltRight': '@',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Digit3' ]: {
+    ['Digit3']: {
         regular: 'š',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '3',
                 'ShiftRight': '3',
                 'AltRight': '#',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Digit4' ]: {
+    ['Digit4']: {
         regular: 'č',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '4',
                 'ShiftRight': '4',
                 'AltRight': '$',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Digit5' ]: {
+    ['Digit5']: {
         regular: 'ř',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '5',
                 'ShiftRight': '5',
                 'AltRight': '%',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Digit6' ]: {
+    ['Digit6']: {
         regular: 'ž',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '6',
                 'ShiftRight': '6',
                 'AltRight': '^',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Digit7' ]: {
+    ['Digit7']: {
         regular: 'ý',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '7',
                 'ShiftRight': '7',
                 'AltRight': '&',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Digit8' ]: {
+    ['Digit8']: {
         regular: 'á',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '8',
                 'ShiftRight': '8',
                 'AltRight': '*',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Digit9' ]: {
+    ['Digit9']: {
         regular: 'í',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '9',
                 'ShiftRight': '9',
                 'AltRight': '{',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Digit0' ]: {
+    ['Digit0']: {
         regular: 'é',
-        modified: ( modifiers: string ) => {
+        modified: (modifiers: string) => {
             return {
                 'ShiftLeft': '0',
                 'ShiftRight': '0',
                 'AltRight': '}',
-            }[ modifiers ] ?? null
+            }[modifiers] ?? null
         },
     },
-    [ 'Space' ]: {
+    ['Space']: {
         regular: ' ',
-        modified: ( _modifiers: string ) => null,
+        modified: (_modifiers: string) => null,
     },
-    [ 'NumpadMultiply' ]: {
+    ['NumpadMultiply']: {
         regular: '*',
-        modified: ( _modifiers: string ) => null
+        modified: (_modifiers: string) => null
     },
-    [ 'NumpadDivide' ]: {
+    ['NumpadDivide']: {
         regular: '/',
-        modified: ( _modifiers: string ) => null
+        modified: (_modifiers: string) => null
     },
-    [ 'NumpadSubtract' ]: {
+    ['NumpadSubtract']: {
         regular: '-',
-        modified: ( _modifiers: string ) => null
+        modified: (_modifiers: string) => null
     },
-    [ 'NumpadAdd' ]: {
+    ['NumpadAdd']: {
         regular: '+',
-        modified: ( _modifiers: string ) => null
+        modified: (_modifiers: string) => null
     },
-    [ 'NumpadDecimal' ]: {
+    ['NumpadDecimal']: {
         regular: '.',
-        modified: ( _modifiers: string ) => null
+        modified: (_modifiers: string) => null
     },
 }
 
@@ -506,28 +506,28 @@ const modifiers = [
 ]
 
 const metaKeys = {
-    [ 'Tab' ]: 'Tab',
-    [ 'CapsLock' ]: 'CapsLock',
-    [ 'Escape' ]: 'Escape',
-    [ 'Backspace' ]: 'Backspace',
-    [ 'Enter' ]: 'Enter',
-    [ 'NumpadEnter' ]: 'Enter',
+    ['Tab']: 'Tab',
+    ['CapsLock']: 'CapsLock',
+    ['Escape']: 'Escape',
+    ['Backspace']: 'Backspace',
+    ['Enter']: 'Enter',
+    ['NumpadEnter']: 'Enter',
 }
 
 export class CzechQwertz extends Layout {
-    matchCharacter ( code: string, modifiers?: Array< string > ) {
-        const char = characters[ code ]
-        const modified = char && modifiers ? char.modified( modifiers.join( ' ' ) ) : null
+    matchCharacter(code: string, modifiers?: Array<string>) {
+        const char = characters[code]
+        const modified = char && modifiers ? char.modified(modifiers.join(' ')) : null
         // console.debug( `${ code } -> ${ char ? modified ? modified : char.regular : null }\nmodifiers: ${ modifiers?.join( ' ' ) }` )
 
         return char ? modified ? modified : char.regular : null
     }
 
-    matchMetaKey ( code: string ) {
+    matchMetaKey(code: string) {
         // @ts-ignore
-        const key = metaKeys[ code ]
+        const key = metaKeys[code]
         return key ? key : null
     }
 
-    isModifier = ( code: string ) => modifiers.includes( code )
+    isModifier = (code: string) => modifiers.includes(code)
 }

@@ -9,9 +9,9 @@ export interface TestDifficulty {
 }
 
 export const TestDifficultyEntries: {
-    [ name: string ]: TestDifficulty
+    [name: string]: TestDifficulty
 } = {
-    [ 'newbie' ]: {
+    ['newbie']: {
         id: 'newbie',
         name: 'newbie',
         maxDelta: 300,
@@ -20,7 +20,7 @@ export const TestDifficultyEntries: {
         incorrectCharacterPenalty: 4,
         rewardMultiplier: 10,
     },
-    [ 'average' ]: {
+    ['average']: {
         id: 'average',
         name: 'average',
         maxDelta: 200,
@@ -29,7 +29,7 @@ export const TestDifficultyEntries: {
         incorrectCharacterPenalty: 6,
         rewardMultiplier: 5,
     },
-    [ 'intermediate' ]: {
+    ['intermediate']: {
         id: 'intermediate',
         name: 'intermediate',
         maxDelta: 120,
@@ -38,7 +38,7 @@ export const TestDifficultyEntries: {
         incorrectCharacterPenalty: 6,
         rewardMultiplier: 2.5,
     },
-    [ 'exceptional' ]: {
+    ['exceptional']: {
         id: 'exceptional',
         name: 'exceptional',
         maxDelta: 60,
@@ -47,7 +47,7 @@ export const TestDifficultyEntries: {
         incorrectCharacterPenalty: 6,
         rewardMultiplier: 2.5,
     },
-    [ 'thock' ]: {
+    ['thock']: {
         id: 'thock',
         name: 'thock',
         maxDelta: 60,
@@ -56,7 +56,7 @@ export const TestDifficultyEntries: {
         incorrectCharacterPenalty: 8,
         rewardMultiplier: 2,
     },
-    [ 'lobotomy' ]: {
+    ['lobotomy']: {
         id: 'lobotomy',
         name: 'lobotomy',
         maxDelta: 50,

@@ -48,55 +48,55 @@ export class TestManager {
     }
 
     #dictionary: Dictionary
-    #listeners: Array< TestEventListener > = []
+    #listeners: Array<TestEventListener> = []
 
     #caretElement: HTMLDivElement
 
     // variables modified by test generation
     #writingArea: HTMLDivElement
     #testState: TestState = TestManager.#emptyTestState
-    #words: Array< WordEntity > = []
+    #words: Array<WordEntity> = []
     #needsRegenerating: boolean = false
 
-    constructor ( settingsManager: SettingsManager, layout: Layout ) {
+    constructor(settingsManager: SettingsManager, layout: Layout) {
         // find the writing area
-        const areaElement = document.querySelector( '#testWritingArea' )
-        if ( !areaElement )
-            throw Error( 'Expected HTMLDivElement from query for "#testWritingArea", got nothing instead.' )
+        const areaElement = document.querySelector('#testWritingArea')
+        if (!areaElement)
+            throw Error('Expected HTMLDivElement from query for "#testWritingArea", got nothing instead.')
 
         this.#writingArea = areaElement as HTMLDivElement
 
         // find the caret element
-        const caretElement = document.querySelector( '#testCaret' )
-        if ( !caretElement )
-            throw Error( 'Expected HTMLDivElement from query for "#testCaret", got nothing instead.' )
+        const caretElement = document.querySelector('#testCaret')
+        if (!caretElement)
+            throw Error('Expected HTMLDivElement from query for "#testCaret", got nothing instead.')
 
         this.#caretElement = caretElement as HTMLDivElement
 
         // hardcoded default dictionary for now
-        this.#dictionary = new English( layout )
+        this.#dictionary = new English(layout)
         this.clearTest()
 
-        window.addEventListener( 'resize', () => this.syncCaret({
+        window.addEventListener('resize', () => this.syncCaret({
             word: this.#testState.current.word.index,
             character: this.#testState.current.character.index,
         }))
 
-        this.#writingArea.addEventListener( 'animationend', event => {
+        this.#writingArea.addEventListener('animationend', event => {
             const word = event.target as HTMLDivElement
 
-            word.removeAttribute( 'data-error' )
-            word.querySelectorAll( '[data-error]' ).forEach( letter => letter.removeAttribute( 'data-error' ) )
+            word.removeAttribute('data-error')
+            word.querySelectorAll('[data-error]').forEach(letter => letter.removeAttribute('data-error'))
         })
 
         settingsManager.addListener({
             type: 'valuechange',
-            exec: ( value: { id: string, value: any } ) => {
-                if ( value.id === 'characterCount' ) {
-                    if ( this.#testState.total.test.start !== -1 )
-                        this.finishTest( false )
+            exec: (value: { id: string, value: any }) => {
+                if (value.id === 'characterCount') {
+                    if (this.#testState.total.test.start !== -1)
+                        this.finishTest(false)
 
-                    this.regenerateTest( value.value )
+                    this.regenerateTest(value.value)
                 }
             }
         })
@@ -106,36 +106,36 @@ export class TestManager {
     //        EVENTS
     // --- - - - - - - - ---
 
-    callListeners ( eventType: TestEventType ) {
+    callListeners(eventType: TestEventType) {
         this.#listeners
-            .filter( listener => listener.type === eventType )
-            .forEach( listener => listener.exec() )
+            .filter(listener => listener.type === eventType)
+            .forEach(listener => listener.exec())
     }
 
-    addListener = ( listener: TestEventListener ) => this.#listeners.push( listener )
-    removeListener = ( listener: TestEventListener ) => arrayYoink( this.#listeners, listener )
+    addListener = (listener: TestEventListener) => this.#listeners.push(listener)
+    removeListener = (listener: TestEventListener) => arrayYoink(this.#listeners, listener)
 
     // --- - - - - - - - ---
     //    TEST GENERATION
     // --- - - - - - - - ---
 
-    clearTest () {
+    clearTest() {
         this.#writingArea.innerHTML = ''
         this.#testState = TestManager.#emptyTestState
         this.#words = []
     }
 
-    regenerateTest ( characterCount: number ) {
+    regenerateTest(characterCount: number) {
         // this.toggleTestResetNotice( false )
 
         this.clearTest()
-        const testLength = this.appendRandomWords( characterCount )
+        const testLength = this.appendRandomWords(characterCount)
 
         this.#testState = {
             current: {
                 word: {
                     index: 0,
-                    length: this.#words[ 0 ].length,
+                    length: this.#words[0].length,
                 },
                 character: {
                     index: 0,
@@ -163,26 +163,26 @@ export class TestManager {
         this.#needsRegenerating = false
     }
 
-    appendWord ( word: WordEntity ): number {
-        let html = word.toSpanArray().join( '' )
-        html += `<span id="currentTest-word-${ word.index }-letter-${ word.length }" data-state="untyped">&nbsp</span>`
+    appendWord(word: WordEntity): number {
+        let html = word.toSpanArray().join('')
+        html += `<span id="currentTest-word-${word.index}-letter-${word.length}" data-state="untyped">&nbsp</span>`
 
-        this.#writingArea.innerHTML += `<div class="word" id="currentTest-word-${ word.index }">${ html }</div>`
-        this.#words[ word.index ] = word
+        this.#writingArea.innerHTML += `<div class="word" id="currentTest-word-${word.index}">${html}</div>`
+        this.#words[word.index] = word
 
-        return word.length + ( word.index != 0 ? 1 : 0 )
+        return word.length + (word.index != 0 ? 1 : 0)
     }
 
-    appendRandomWords ( characterCount: number ): number {
+    appendRandomWords(characterCount: number): number {
         let tempLength = 0
 
-        for ( let i = 0; tempLength < characterCount; i++ ) {
-            const available = characterCount - tempLength - ( i != 0 ? 1 : 0 )
+        for (let i = 0; tempLength < characterCount; i++) {
+            const available = characterCount - tempLength - (i != 0 ? 1 : 0)
             const word = available <= EXACT_FIT_LENGTH
                 ? this.#dictionary.nextWord({ min: available, max: available })
                 : this.#dictionary.nextWord({ min: 1, max: available - FOLLOWING_WORDS_RESERVE })
 
-            tempLength += this.appendWord( new WordEntity( word, i ) )
+            tempLength += this.appendWord(new WordEntity(word, i))
         }
 
         return tempLength
@@ -193,8 +193,8 @@ export class TestManager {
     // --- - - - - - - - ---
 
     getCurrentCharacterSymbol = () =>
-        this.#words[ this.#testState.current.word.index ]
-            .getSymbol( this.#testState.current.character.index )
+        this.#words[this.#testState.current.word.index]
+            .getSymbol(this.#testState.current.character.index)
         ?? 'ERROR' // top-notch error handling right there
 
     highlightCurrentCharacter = () => this.highlightCharacter({
@@ -202,27 +202,27 @@ export class TestManager {
         character: this.#testState.current.character.index,
     })
 
-    highlightCharacter ( index: { word: number, character: number } ) {
-        const unchecked = document.querySelector( `#currentTest-word-${ index.word }-letter-${ index.character }` )
-        if ( !unchecked )
-            throw Error( `Character with word index ${ index.word } and character index ${ index.character } doesn't exist.` )
+    highlightCharacter(index: { word: number, character: number }) {
+        const unchecked = document.querySelector(`#currentTest-word-${index.word}-letter-${index.character}`)
+        if (!unchecked)
+            throw Error(`Character with word index ${index.word} and character index ${index.character} doesn't exist.`)
 
         const span = unchecked as HTMLSpanElement
-        span.setAttribute( 'data-state', 'highlighted' )
+        span.setAttribute('data-state', 'highlighted')
 
         this.syncCaret()
     }
 
-    syncCaret ( index?: { word: number, character: number } ) {
-        if ( !index )
+    syncCaret(index?: { word: number, character: number }) {
+        if (!index)
             index = {
                 word: this.#testState.current.word.index,
                 character: this.#testState.current.character.index,
             }
 
-        const unchecked = document.querySelector( `#currentTest-word-${ index.word }-letter-${ index.character }` )
-        if ( !unchecked )
-            throw Error( `Character with word index ${ index.word } and character index ${ index.character } doesn't exist.` )
+        const unchecked = document.querySelector(`#currentTest-word-${index.word}-letter-${index.character}`)
+        if (!unchecked)
+            throw Error(`Character with word index ${index.word} and character index ${index.character} doesn't exist.`)
 
         const span = unchecked as HTMLSpanElement
 
@@ -239,21 +239,21 @@ export class TestManager {
             top += element.offsetTop
         }
 
-        this.#caretElement.style.width = `${ span.offsetWidth }px`
-        this.#caretElement.style.left = `${ left }px`
-        this.#caretElement.style.top = `${ top + span.offsetHeight - 3 }px`
+        this.#caretElement.style.width = `${span.offsetWidth}px`
+        this.#caretElement.style.left = `${left}px`
+        this.#caretElement.style.top = `${top + span.offsetHeight - 3}px`
     }
 
-    advanceCurrentWord () {
+    advanceCurrentWord() {
         this.#testState.current.word.index++
-        this.#testState.current.word.length = this.#words[ this.#testState.current.word.index ].length
+        this.#testState.current.word.length = this.#words[this.#testState.current.word.index].length
         this.#testState.current.character.index = 0
 
         this.#testState.current.character.symbol = this.getCurrentCharacterSymbol()
         this.syncCaret()
     }
 
-    advanceCurrentCharacter () {
+    advanceCurrentCharacter() {
         if (
             this.#testState.current.word.index === this.#words.length - 1
             && this.#testState.current.character.index === this.#testState.current.word.length - 1
@@ -266,41 +266,41 @@ export class TestManager {
 
     didReachWordEnd = () =>
         this.#testState.current.character.index === this.#testState.current.word.length
-        && !this.#words[ this.#testState.current.word.index ].getSymbol( this.#testState.current.character.index )
+        && !this.#words[this.#testState.current.word.index].getSymbol(this.#testState.current.character.index)
 
-    typeCharacter ( input: string ): boolean {
-        if ( this.#needsRegenerating ) {
+    typeCharacter(input: string): boolean {
+        if (this.#needsRegenerating) {
             return false
         }
 
-        if ( this.#testState.total.test.start === -1 ) {
+        if (this.#testState.total.test.start === -1) {
             this.#testState.total.test.start = Date.now()
-            this.callListeners( 'start' )
+            this.callListeners('start')
         }
 
         this.#testState.total.charactersWritten.total++
 
-        if ( input === ' ' && this.didReachWordEnd() ) {
+        if (input === ' ' && this.didReachWordEnd()) {
             this.advanceCurrentWord()
             this.#testState.total.charactersWritten.correct++
 
             return true
         }
 
-        if ( this.#testState.current.character.symbol === input ) {
-            const currentUnchecked = document.querySelector( `#currentTest-word-${ this.#testState.current.word.index }-letter-${ this.#testState.current.character.index }` )
-            if ( !currentUnchecked ) {
+        if (this.#testState.current.character.symbol === input) {
+            const currentUnchecked = document.querySelector(`#currentTest-word-${this.#testState.current.word.index}-letter-${this.#testState.current.character.index}`)
+            if (!currentUnchecked) {
                 return false
             }
 
             const currentSpan = currentUnchecked as HTMLSpanElement
-            currentSpan.setAttribute( 'data-state', 'typed' )
+            currentSpan.setAttribute('data-state', 'typed')
 
             this.advanceCurrentCharacter()
             this.#testState.total.charactersWritten.correct++
 
-            if ( this.#testState.total.charactersWritten.correct === this.#testState.total.test.length )
-                this.finishTest( false )
+            if (this.#testState.total.charactersWritten.correct === this.#testState.total.test.length)
+                this.finishTest(false)
 
             return true
         }
@@ -309,32 +309,32 @@ export class TestManager {
         return false
     }
 
-    indicateError () {
+    indicateError() {
         const { word, character } = this.#testState.current
-        const wordElement = document.querySelector( `#currentTest-word-${ word.index }` ) as HTMLDivElement
+        const wordElement = document.querySelector(`#currentTest-word-${word.index}`) as HTMLDivElement
 
         // restart the wiggle when it's still playing
-        wordElement.removeAttribute( 'data-error' )
+        wordElement.removeAttribute('data-error')
         void wordElement.offsetWidth
-        wordElement.setAttribute( 'data-error', 'true' )
+        wordElement.setAttribute('data-error', 'true')
 
-        document.querySelector( `#currentTest-word-${ word.index }-letter-${ character.index }` )
-            ?.setAttribute( 'data-error', 'true' )
+        document.querySelector(`#currentTest-word-${word.index}-letter-${character.index}`)
+            ?.setAttribute('data-error', 'true')
     }
 
-    finishTest ( silent: boolean ) {
+    finishTest(silent: boolean) {
         this.#testState.total.test.end = Date.now()
         this.#testState.total.test.total = this.#testState.total.test.end - this.#testState.total.test.start
         this.#testState.total.test.result = this.#testState.total.charactersWritten.correct === this.#testState.total.test.length ? 'succeeded' : 'failed'
 
         this.#needsRegenerating = true
 
-        if ( !silent ) this.callListeners( 'finish' )
+        if (!silent) this.callListeners('finish')
 
         // this.toggleTestResetNotice( true )
     }
 
-    setTestVisible = ( visible: boolean ) => document.querySelector( '#currentTest' )!.setAttribute( 'data-testVisible', `${ visible }` )
+    setTestVisible = (visible: boolean) => document.querySelector('#currentTest')!.setAttribute('data-testVisible', `${visible}`)
 
     // --- - - - - - - - ---
     //       UTILITIES
@@ -342,6 +342,6 @@ export class TestManager {
 
     needsRegenerating = () => this.#needsRegenerating
     getTestLength = () => this.#testState.total.test.length
-    changeDictionary = ( dictionary: Dictionary ) => this.#dictionary = dictionary
+    changeDictionary = (dictionary: Dictionary) => this.#dictionary = dictionary
     getTestState = () => this.#testState
 }

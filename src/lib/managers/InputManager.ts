@@ -3,7 +3,7 @@ import { CzechQwertz } from '../tests/layouts/CzechQwertz.ts'
 import { arrayYoink } from '../utils/arrays.ts'
 
 type InputListenerType = 'character' | 'meta' | 'modifier'
-type InputListenerExec = ( character: string ) => void
+type InputListenerExec = (character: string) => void
 
 interface InputListener {
     type: InputListenerType
@@ -11,33 +11,33 @@ interface InputListener {
 }
 
 export class InputManager {
-    #listeners: Array< InputListener > = []
+    #listeners: Array<InputListener> = []
 
-    #internalKeypressListener: ( ( event: KeyboardEvent ) => void ) | null = null
-    #internalKeyreleaseListener: ( ( event: KeyboardEvent ) => void ) | null = null
+    #internalKeypressListener: ((event: KeyboardEvent) => void) | null = null
+    #internalKeyreleaseListener: ((event: KeyboardEvent) => void) | null = null
 
     #activeLayout: Layout
-    readonly activeModifierKeys: Array< string > = []
+    readonly activeModifierKeys: Array<string> = []
 
-    constructor ( layout?: Layout ) {
+    constructor(layout?: Layout) {
         this.#activeLayout = layout ? layout : new CzechQwertz()
         this.createInternalHooks()
     }
 
-    destroy () {
+    destroy() {
         this.destroyHooks()
     }
 
-    private destroyHooks () {
+    private destroyHooks() {
         // remove internal event listeners
-        if ( this.#internalKeypressListener )
-            document.removeEventListener( 'keydown', this.#internalKeypressListener )
+        if (this.#internalKeypressListener)
+            document.removeEventListener('keydown', this.#internalKeypressListener)
 
-        if ( this.#internalKeyreleaseListener )
-            document.removeEventListener( 'keyup', this.#internalKeyreleaseListener )
+        if (this.#internalKeyreleaseListener)
+            document.removeEventListener('keyup', this.#internalKeyreleaseListener)
     }
 
-    private createInternalHooks () {
+    private createInternalHooks() {
         // check if we already registered the internal event listeners
         if (
             this.#internalKeypressListener
@@ -45,61 +45,61 @@ export class InputManager {
         ) this.destroyHooks()
 
         this.#internalKeypressListener = event => {
-            if ( this.#activeLayout.isModifier( event.code ) ) {
-                this.activeModifierKeys.push( event.code )
+            if (this.#activeLayout.isModifier(event.code)) {
+                this.activeModifierKeys.push(event.code)
                 event.preventDefault()
             } else {
                 // call modifier key listeners
                 this.#listeners
-                    .filter( listener => listener.type === 'modifier' )
-                    .forEach( listener => {
-                        const matched = this.#activeLayout.isModifier( event.code )
+                    .filter(listener => listener.type === 'modifier')
+                    .forEach(listener => {
+                        const matched = this.#activeLayout.isModifier(event.code)
 
-                        if ( matched ) {
+                        if (matched) {
                             event.preventDefault()
-                            listener.exec( event.code )
+                            listener.exec(event.code)
                         }
                     })
 
                 // call meta key listeners
                 this.#listeners
-                    .filter( listener => listener.type === 'meta' )
-                    .forEach( listener => {
-                        const matched = this.#activeLayout.matchMetaKey( event.code )
+                    .filter(listener => listener.type === 'meta')
+                    .forEach(listener => {
+                        const matched = this.#activeLayout.matchMetaKey(event.code)
 
-                        if ( matched ) {
+                        if (matched) {
                             event.preventDefault()
-                            listener.exec( matched )
+                            listener.exec(matched)
                         }
                     })
 
                 // call character listeners
                 this.#listeners
-                    .filter( listener => listener.type === 'character' )
-                    .forEach( listener => {
-                        const matched = this.#activeLayout.matchCharacter( event.code, this.activeModifierKeys )
+                    .filter(listener => listener.type === 'character')
+                    .forEach(listener => {
+                        const matched = this.#activeLayout.matchCharacter(event.code, this.activeModifierKeys)
 
-                        if ( matched ) {
+                        if (matched) {
                             event.preventDefault()
-                            listener.exec( matched )
+                            listener.exec(matched)
                         }
                     })
             }
         }
 
         this.#internalKeyreleaseListener = event => {
-            if ( this.#activeLayout.isModifier( event.code ) ) {
-                const index = this.activeModifierKeys.indexOf( event.code )
+            if (this.#activeLayout.isModifier(event.code)) {
+                const index = this.activeModifierKeys.indexOf(event.code)
 
                 // remove the modifier key as it is no longer pressed
-                if ( index !== -1 )
-                    this.activeModifierKeys.splice( index, 1 )
+                if (index !== -1)
+                    this.activeModifierKeys.splice(index, 1)
             }
         }
 
         // register internal events
-        document.addEventListener( 'keydown', this.#internalKeypressListener )
-        document.addEventListener( 'keyup', this.#internalKeyreleaseListener )
+        document.addEventListener('keydown', this.#internalKeypressListener)
+        document.addEventListener('keyup', this.#internalKeyreleaseListener)
     }
 
     addListener = (
@@ -110,10 +110,10 @@ export class InputManager {
         exec: listener,
     })
 
-    removeListener ( listener: InputListener ) {
-        arrayYoink( this.#listeners, listener )
+    removeListener(listener: InputListener) {
+        arrayYoink(this.#listeners, listener)
     }
 
     getLayout = () => this.#activeLayout
-    setLayout = ( layout: Layout ) => this.#activeLayout = layout
+    setLayout = (layout: Layout) => this.#activeLayout = layout
 }

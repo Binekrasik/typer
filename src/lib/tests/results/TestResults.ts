@@ -3,10 +3,10 @@ import type { TestDifficulty } from '../TestDifficultyEntries.ts'
 export type TestRankDisplayProperties = {
     name: string
     color: string
-    comments: Array< string >
+    comments: Array<string>
 }
 
-export const TestRanks: Record< string, TestRankDisplayProperties > = {
+export const TestRanks: Record<string, TestRankDisplayProperties> = {
     ss: {
         name: 'SS',
         color: '#fb6fff',
