@@ -1,6 +1,7 @@
 import type { ProgressBarManager } from './ProgressBarManager.ts'
 import { TestDifficultyEntries, type TestDifficulty } from '../tests/TestDifficultyEntries.ts'
-import { Debug } from '../utils/Debug.ts'
+
+// import { Debug } from '../utils/Debug.ts'
 
 export class ScoreManager {
     #progressManager: ProgressBarManager
@@ -24,14 +25,14 @@ export class ScoreManager {
     getIncorrectCharacterPenalty = () => this.#difficulty.incorrectCharacterPenalty
 
     debugScoreProperties() {
-        Debug.setContent(`
+        /* Debug.setContent(`
             <p>difficulty: ${this.#difficulty.name}</p>
             <p>max delta: ${this.#difficulty.maxDelta} (~${(1000 / this.#difficulty.maxDelta * 60) / 5} wpm)</p>
             <p>interval: ${this.#difficulty.penalizationIntervalDelay}</p>
             <p>incorrect penalty: ${this.getIncorrectCharacterPenalty()}</p>
             <p>reward multiplier: ${this.getRewardValue()}</p>
             <p>minimum timeout penalty (${this.#difficulty.maxDelta}): ${this.calculatePenalty(this.#difficulty.maxDelta)}</p>
-        `)
+        `) */
     }
 
     startPenalizer() {

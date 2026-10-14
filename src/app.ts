@@ -6,11 +6,12 @@ import { TestManager } from './lib/managers/TestManager.ts'
 import { arrayIncludesAny } from './lib/utils/arrays.ts'
 import { ScoreManager } from './lib/managers/ScoreManager.ts'
 import { TestDifficultyEntries } from './lib/tests/TestDifficultyEntries.ts'
-import { Debug } from './lib/utils/Debug.ts'
 import { DifficultySelectionManager } from './lib/managers/DifficultySelectionManager.ts'
 import { SettingsManager } from './lib/managers/SettingsManager.ts'
 import { TestResultsManager } from './lib/managers/TestResultsManager.ts'
 import { sounds } from './lib/audio/sounds.ts'
+
+// import { Debug } from './lib/utils/Debug.ts'
 
 let testsCount = 0
 
@@ -129,7 +130,7 @@ testManager.addListener({
             username: 'anonymous',
         })
 
-        Debug.setContent(`
+        /* Debug.setContent(`
             <p style="color: ${state.total.test.result === 'succeeded' ? '#0f0' : '#f00'}">test ${state.total.test.result}</p>
             <p>test this session: ${testsCount}</p>
             <p>difficulty: ${scoreManager.getDifficulty().name}</p>
@@ -137,6 +138,6 @@ testManager.addListener({
             <p>total characters: ${state.total.charactersWritten.total}</p>
             <p>correct characters: ${state.total.charactersWritten.correct}</p>
             <p>rating: ${Math.round(progressManager.getPercentageValue())}%</p>
-        `)
+        `) */
     }
 })
