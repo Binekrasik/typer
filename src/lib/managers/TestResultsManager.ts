@@ -5,13 +5,14 @@ import {
 } from '../tests/results/TestResults.ts'
 import { type SoundType, sounds } from '../audio/sounds.ts'
 
-const rankSoundThresholds: ReadonlyArray<[number, SoundType]> = [
-    [1, 'score_d'],
-    [50, 'score_c'],
-    [70, 'score_b'],
-    [85, 'score_a'],
-    [95, 'score_s'],
-    [100, 'score_ss'],
+// ordered from the left of the ranking bar, a segment pops and plays its sound once the rating reaches its threshold
+const rankSegments: ReadonlyArray<{ rank: string, width: number, threshold: number, sound: SoundType }> = [
+    { rank: 'd', width: 50, threshold: 1, sound: 'score_d' },
+    { rank: 'c', width: 20, threshold: 50, sound: 'score_c' },
+    { rank: 'b', width: 15, threshold: 70, sound: 'score_b' },
+    { rank: 'a', width: 10, threshold: 85, sound: 'score_a' },
+    { rank: 's', width: 4, threshold: 95, sound: 'score_s' },
+    { rank: 'ss', width: 1, threshold: 100, sound: 'score_ss' },
 ]
 
 const ratingAnimationDuration = 4000
@@ -33,6 +34,7 @@ export class TestResultsManager {
         document.querySelectorAll('#testResultsOverlay .progressRankingBar div').forEach(entry => {
             const element = entry as HTMLDivElement
             element.style.width = '0%'
+            element.removeAttribute('data-reached')
         })
     }
 
@@ -45,14 +47,9 @@ export class TestResultsManager {
         const ratingPercentage = document.querySelector('#testResultsOverlay .achievedProgressBox p span') as HTMLSpanElement
         const progressBox = document.querySelector('#testResultsOverlay .achievedProgressBox') as HTMLDivElement
 
-        const rankBars = {
-            ss: document.querySelector('#testResultsOverlay .progressRankingBar .rankSS') as HTMLDivElement,
-            s: document.querySelector('#testResultsOverlay .progressRankingBar .rankS') as HTMLDivElement,
-            a: document.querySelector('#testResultsOverlay .progressRankingBar .rankA') as HTMLDivElement,
-            b: document.querySelector('#testResultsOverlay .progressRankingBar .rankB') as HTMLDivElement,
-            c: document.querySelector('#testResultsOverlay .progressRankingBar .rankC') as HTMLDivElement,
-            d: document.querySelector('#testResultsOverlay .progressRankingBar .rankD') as HTMLDivElement,
-        }
+        const rankBars = rankSegments.map(segment =>
+            document.querySelector(`#testResultsOverlay .progressRankingBar .rank${segment.rank.toUpperCase()}`) as HTMLDivElement,
+        )
 
         const statsTexts = {
             speed: document.querySelector('#testResultsSpeedText span') as HTMLSpanElement,
@@ -81,7 +78,8 @@ export class TestResultsManager {
         const animateRating = (timestamp: number) => {
             animationStart ??= timestamp
 
-            const computed = Math.trunc(progressBox.offsetWidth / (0.15 * window.innerWidth) * 100)
+            // measured in subpixels and capped, so it lands exactly on the rating at any window width
+            const computed = Math.min(Math.round(progressBox.getBoundingClientRect().width / (0.15 * window.innerWidth) * 100), results.rating)
             if (computed != displayedRating) {
                 sounds.score.play()
                 ratingPercentage.innerText = `${computed}`
@@ -89,12 +87,14 @@ export class TestResultsManager {
             }
 
             const previouslyReachedRanks = reachedRanks
-            while (reachedRanks < rankSoundThresholds.length && computed >= rankSoundThresholds[reachedRanks][0])
+            while (reachedRanks < rankSegments.length && computed >= rankSegments[reachedRanks].threshold) {
+                rankBars[reachedRanks].setAttribute('data-reached', 'true')
                 reachedRanks++
+            }
 
             // only the highest rank crossed this frame gets its sound, so skipped frames don't stack sounds
             if (reachedRanks > previouslyReachedRanks)
-                sounds[rankSoundThresholds[reachedRanks - 1][1]].play()
+                sounds[rankSegments[reachedRanks - 1].sound].play()
 
             if (timestamp - animationStart < ratingAnimationDuration)
                 this.#numberAnimator = requestAnimationFrame(animateRating)
@@ -103,18 +103,10 @@ export class TestResultsManager {
         this.#numberAnimator = requestAnimationFrame(animateRating)
 
         // todo: allow for dynamic changes of rank ratings
-        rankBars.ss.style.width = '1%'
-        rankBars.ss.style.background = TestRanks.ss.color
-        rankBars.s.style.width = '4%'
-        rankBars.s.style.background = TestRanks.s.color
-        rankBars.a.style.width = '10%'
-        rankBars.a.style.background = TestRanks.a.color
-        rankBars.b.style.width = '15%'
-        rankBars.b.style.background = TestRanks.b.color
-        rankBars.c.style.width = '20%'
-        rankBars.c.style.background = TestRanks.c.color
-        rankBars.d.style.width = '50%'
-        rankBars.d.style.background = TestRanks.d.color
+        rankSegments.forEach((segment, index) => {
+            rankBars[index].style.width = `${segment.width}%`
+            rankBars[index].style.setProperty('--rank-color', TestRanks[segment.rank].color)
+        })
 
         statsTexts.speed.innerText = `${results.speed}`
         statsTexts.accuracy.innerText = `${results.accuracy}`
