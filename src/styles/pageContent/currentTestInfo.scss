@@ -12,7 +12,7 @@
                 height: 20px;
                 width: 10vw;
 
-                background: rgba( colors.$primary, .25 );
+                background: colors.alpha( colors.$primary, .25 );
 
                 transform: skewX( -25deg );
 

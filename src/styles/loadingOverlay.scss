@@ -40,6 +40,10 @@
     transition: all 1s easings.$easeSmooth;
 
     svg {
+        path {
+            stroke: var( --color-primary );
+        }
+
         animation: 2.5s easings.$easeAnticipate infinite indicatorSpinner;
     }
 

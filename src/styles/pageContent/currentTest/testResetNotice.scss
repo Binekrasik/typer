@@ -12,12 +12,12 @@
     font-size: 18px;
     font-weight: 500;
 
-    color: rgba( colors.$foreground, .25 );
+    color: colors.alpha( colors.$foreground, .25 );
 
     transition: opacity .5s easings.$easeSmooth;
 
     span {
-        color: rgba( colors.$primary, .5 );
+        color: colors.alpha( colors.$primary, .5 );
     }
 
     &[ data-visible='false' ] {

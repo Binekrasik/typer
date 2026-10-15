@@ -1,4 +1,12 @@
-$primary: #a3f8ce;
-$background: #000;
-$foreground: #fff;
-$error: #ff5252;
+@use 'sass:string';
+
+// the theme sets these at runtime, see src/lib/settings/themes.ts
+$primary: var( --color-primary );
+$background: var( --color-background );
+$foreground: var( --color-foreground );
+$error: var( --color-error );
+
+// rgba() can't take a custom property, relative colors can
+@function alpha( $color, $alpha ) {
+    @return string.unquote( 'rgb( from #{ $color } r g b / #{ $alpha } )' );
+}

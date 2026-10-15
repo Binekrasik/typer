@@ -28,10 +28,10 @@
             font-size: 3rem;
 
             transition: color .25s easings.$easeSmooth;
-            color: rgba( colors.$primary, .25 );
+            color: colors.alpha( colors.$primary, .25 );
 
             &[ data-error='true' ] {
-                color: rgba( colors.$error, .6 );
+                color: colors.alpha( colors.$error, .6 );
             }
 
             &[ data-state='typed' ] {

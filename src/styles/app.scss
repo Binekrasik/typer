@@ -7,6 +7,14 @@
 @use 'values/colors' as colors;
 @use 'values/easings' as easings;
 
+// the mint theme, used until the saved theme applies
+:root {
+    --color-primary: #a3f8ce;
+    --color-background: #000;
+    --color-foreground: #fff;
+    --color-error: #ff5252;
+}
+
 * {
     box-sizing: border-box;
 }
