@@ -1,0 +1,653 @@
+@use 'values/colors' as colors;
+@use 'values/easings' as easings;
+
+// a skewed box with upright text inside, the shape the rest of the app is built from
+@mixin skewedBox {
+    transform: skewX( -25deg );
+
+    > span {
+        display: block;
+        transform: skewX( 25deg );
+    }
+}
+
+#settingsOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+
+    background: colors.alpha( colors.$background, .7 );
+    backdrop-filter: blur( 14px );
+
+    // hidden only once it has faded out, index.html hides it before this stylesheet loads
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .25s easings.$easeSmooth, visibility 0s linear .25s;
+
+    &[ data-open="true" ] {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transition: opacity .25s easings.$easeSmooth;
+
+        .settingsPanel {
+            transform: none;
+        }
+    }
+
+    // rows set their own display, which would otherwise win over the hidden attribute
+    [ hidden ] {
+        display: none !important;
+    }
+}
+
+.settingsPanel {
+    display: flex;
+    flex-direction: column;
+
+    width: min( 760px, 100% );
+    height: min( 600px, 100% );
+
+    background: colors.alpha( colors.$background, .96 );
+    border: 1px solid colors.alpha( colors.$primary, .25 );
+    box-shadow: 0 0 80px colors.alpha( colors.$primary, .06 );
+    outline: none;
+
+    transform: scale( .96 ) translateY( 12px );
+    transition: transform .3s easings.$easeSmooth;
+}
+
+.settingsPanel .key {
+    @include skewedBox;
+
+    display: inline-block;
+    padding: 3px 10px;
+
+    background: colors.alpha( colors.$primary, .12 );
+    color: colors.alpha( colors.$primary, .85 );
+
+    font-size: 13px;
+    font-weight: 600;
+    font-style: italic;
+    white-space: nowrap;
+}
+
+.settingsTopBar {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+
+    padding: 18px 26px;
+    border-bottom: 1px solid colors.alpha( colors.$primary, .15 );
+
+    .settingsTitle {
+        @include skewedBox;
+
+        padding: 6px 16px;
+        background: colors.$primary;
+        color: colors.$background;
+
+        font-size: 16px;
+        font-weight: 600;
+        font-style: italic;
+    }
+
+    .settingsSearch {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+
+        background: colors.alpha( colors.$primary, .06 );
+        border: 1px solid colors.alpha( colors.$primary, .2 );
+        transform: skewX( -25deg );
+
+        transition: background .25s easings.$easeSmooth, border-color .25s easings.$easeSmooth;
+
+        &:focus-within {
+            background: colors.alpha( colors.$primary, .12 );
+            border-color: colors.alpha( colors.$primary, .7 );
+        }
+
+        input {
+            flex: 1;
+            min-width: 0;
+            padding: 8px 18px;
+
+            transform: skewX( 25deg );
+
+            background: none;
+            border: none;
+            outline: none;
+
+            color: colors.$foreground;
+            caret-color: colors.$primary;
+            font: inherit;
+            font-size: 17px;
+
+            &::placeholder {
+                color: colors.alpha( colors.$primary, .35 );
+                font-style: italic;
+            }
+        }
+    }
+}
+
+.settingsTree {
+    position: relative;
+    flex: 1;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 12px 30px;
+
+    outline: none;
+    scrollbar-width: thin;
+    scrollbar-color: colors.alpha( colors.$primary, .3 ) transparent;
+
+    // solid and between the rows' guides and their content, so the selected row's guides are covered
+    .settingsCursor {
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        left: 0;
+
+        background: color-mix( in srgb, colors.$primary 7%, colors.$background );
+        transform: skewX( -25deg );
+        pointer-events: none;
+
+        transition:
+            top .25s easings.$easeSmooth,
+            left .25s easings.$easeSmooth,
+            width .25s easings.$easeSmooth,
+            height .25s easings.$easeSmooth,
+            opacity .2s easings.$easeSmooth,
+            background .2s easings.$easeSmooth;
+
+        &[ data-hidden="true" ] {
+            opacity: 0;
+        }
+    }
+
+    .settingsEmpty {
+        padding: 48px 0;
+        text-align: center;
+
+        color: colors.alpha( colors.$foreground, .4 );
+        font-style: italic;
+
+        span {
+            color: colors.$primary;
+        }
+    }
+}
+
+// the cursor brightens while the tree has the keyboard
+.settingsPanel[ data-zone="tree" ] .settingsCursor {
+    background: color-mix( in srgb, colors.$primary 18%, colors.$background );
+}
+
+.settingsRow {
+    position: relative;
+
+    > * {
+        position: relative;
+        z-index: 2;
+    }
+
+    display: flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 18px;
+
+    cursor: default;
+    user-select: none;
+    -webkit-user-select: none;
+
+    color: colors.alpha( colors.$foreground, .6 );
+    transition: color .2s easings.$easeSmooth;
+
+    &:hover {
+        color: colors.alpha( colors.$foreground, .85 );
+    }
+
+    &[ aria-selected="true" ] {
+        color: colors.$foreground;
+    }
+
+    .rowLabel {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        mark {
+            background: none;
+            color: colors.$primary;
+            text-decoration: underline;
+            text-decoration-color: colors.alpha( colors.$primary, .5 );
+            text-underline-offset: 3px;
+        }
+    }
+}
+
+.categoryRow {
+    gap: 14px;
+
+    font-size: 18px;
+    font-weight: 600;
+    font-style: italic;
+
+    color: colors.alpha( colors.$primary, .6 );
+
+    &:hover {
+        color: colors.alpha( colors.$primary, .85 );
+    }
+
+    &[ aria-selected="true" ] {
+        color: colors.$primary;
+    }
+
+    .chevron {
+        flex-shrink: 0;
+        width: 7px;
+        height: 7px;
+        margin: 0 2px;
+
+        border-right: 2px solid currentColor;
+        border-bottom: 2px solid currentColor;
+        transform: rotate( -45deg );
+        transition: transform .3s easings.$easeSmooth;
+    }
+
+    .categoryCount {
+        margin-left: auto;
+        font-size: 13px;
+        color: colors.alpha( colors.$primary, .3 );
+    }
+}
+
+.settingsCategory {
+    .categoryChildren {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows .3s easings.$easeSmooth;
+
+        .categoryChildrenInner {
+            min-height: 0;
+            overflow: hidden;
+        }
+    }
+
+    &[ data-open="true" ] {
+        > .categoryRow .chevron {
+            transform: rotate( 45deg );
+        }
+
+        > .categoryChildren {
+            grid-template-rows: 1fr;
+
+            // the rows roll out one after another
+            .entryRow {
+                opacity: 1;
+                transform: none;
+                transition-delay: calc( var( --index ) * 25ms ), calc( var( --index ) * 25ms ), 0s;
+            }
+        }
+    }
+}
+
+.entryRow {
+    gap: 10px;
+    margin-left: 22px;
+    padding-left: 28px;
+
+    font-size: 16px;
+    font-weight: 500;
+
+    opacity: 0;
+    transform: translateX( -12px );
+    transition:
+        opacity .2s easings.$easeSmooth,
+        transform .3s easings.$easeSmooth,
+        color .2s easings.$easeSmooth;
+
+    // tree guides, the last row of a category ends its line halfway
+    &::before, &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        background: colors.alpha( colors.$primary, .25 );
+    }
+
+    &::before {
+        top: 0;
+        bottom: 0;
+        width: 1px;
+    }
+
+    &::after {
+        top: 50%;
+        width: 16px;
+        height: 1px;
+    }
+
+    &[ data-last="true" ]::before {
+        bottom: 50%;
+    }
+
+    .rowModified {
+        flex-shrink: 0;
+        width: 6px;
+        height: 6px;
+
+        background: colors.$primary;
+        transform: skewX( -25deg );
+
+        opacity: 0;
+        transition: opacity .2s easings.$easeSmooth;
+    }
+
+    &[ data-modified="true" ] .rowModified {
+        opacity: .7;
+    }
+
+    .rowValue {
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+
+        color: colors.alpha( colors.$primary, .85 );
+        font-size: 15px;
+        font-weight: 600;
+        font-style: italic;
+        white-space: nowrap;
+
+        &[ data-changed="true" ] {
+            animation: settingPop .35s easings.$easePop;
+        }
+    }
+}
+
+.selectControl {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .selectArrow {
+        padding: 0 6px;
+        color: colors.alpha( colors.$primary, .35 );
+        transition: color .2s easings.$easeSmooth;
+
+        &:hover {
+            color: colors.$primary;
+        }
+    }
+
+    .selectValue {
+        min-width: 110px;
+        text-align: center;
+    }
+
+    &[ data-single="true" ] .selectArrow {
+        visibility: hidden;
+    }
+}
+
+.rangeControl {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .rangeBar {
+        width: 150px;
+        height: 12px;
+
+        background: colors.alpha( colors.$primary, .18 );
+        transform: skewX( -25deg );
+
+        cursor: ew-resize;
+        touch-action: none;
+
+        // only transitions, so a quick click eases back from wherever the grab got to
+        transition:
+            scale .35s easings.$easeSmooth,
+            filter .35s easings.$easeSmooth;
+
+        .rangeFill {
+            height: 100%;
+            background: colors.$primary;
+            transition: width .25s easings.$easeSmooth;
+        }
+    }
+
+    // grabbing the bar pops it bright, it stays lit while dragged and settles once let go
+    // it only grows in height, so the cursor keeps lining up with the value
+    &[ data-dragging="true" ] {
+        .rangeBar {
+            scale: 1 1.35;
+            filter: brightness( 1.35 );
+        }
+
+        // the fill follows the cursor directly, easing it would trail behind
+        .rangeFill {
+            transition: none;
+        }
+
+        .rangeValue {
+            filter: brightness( 1.35 );
+        }
+    }
+
+    &[ data-grabbed="true" ] .rangeBar {
+        scale: 1 1.7;
+        filter: brightness( 1.8 );
+        transition:
+            scale .1s easings.$easeSmooth,
+            filter .1s easings.$easeSmooth;
+    }
+
+    .rangeValue {
+        min-width: 104px;
+        text-align: right;
+        transition: filter .35s easings.$easeSmooth;
+    }
+}
+
+.toggleControl, .actionControl, .keybindControl {
+    @include skewedBox;
+
+    padding: 3px 12px;
+    min-width: 58px;
+    text-align: center;
+
+    border: 1px solid colors.alpha( colors.$primary, .4 );
+    color: colors.alpha( colors.$primary, .6 );
+
+    transition:
+        background .25s easings.$easeSmooth,
+        color .25s easings.$easeSmooth,
+        border-color .25s easings.$easeSmooth;
+}
+
+.toggleControl[ data-on="true" ] {
+    background: colors.$primary;
+    border-color: colors.$primary;
+    color: colors.$background;
+}
+
+.keybindControl {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+
+    background: colors.alpha( colors.$primary, .1 );
+    border-color: colors.alpha( colors.$primary, .25 );
+    color: colors.$primary;
+
+    &[ data-unbound="true" ] {
+        color: colors.alpha( colors.$foreground, .35 );
+    }
+
+    // fills up while esc is held, binding it once full
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+
+        background: colors.alpha( colors.$primary, .45 );
+        transform: scaleX( 0 );
+        transform-origin: left;
+    }
+
+    &[ data-holding="true" ]::before {
+        animation: escapeHold var( --holdTime ) linear forwards;
+    }
+}
+
+.entryRow[ data-state="capturing" ] .keybindControl {
+    border-color: colors.$primary;
+    animation: capturePulse 1.2s easings.$easeSmooth infinite;
+}
+
+.entryRow[ data-state="confirming" ] .actionControl {
+    background: colors.$error;
+    border-color: colors.$error;
+    color: colors.$background;
+}
+
+.textControl input {
+    width: 200px;
+    padding: 3px 6px;
+
+    background: none;
+    border: none;
+    border-bottom: 1px solid colors.alpha( colors.$primary, .3 );
+    outline: none;
+
+    color: colors.$primary;
+    caret-color: colors.$primary;
+    font: inherit;
+    text-align: right;
+
+    transition: border-color .25s easings.$easeSmooth;
+
+    &::placeholder {
+        color: colors.alpha( colors.$primary, .35 );
+    }
+
+    &:focus {
+        border-color: colors.$primary;
+    }
+}
+
+.settingsStatusBar {
+    // only there while it has a message or a hint, folding in and out between the grid rows
+    display: grid;
+    grid-template-rows: 0fr;
+
+    border-top: 1px solid transparent;
+
+    font-size: 13px;
+    color: colors.alpha( colors.$foreground, .45 );
+
+    transition:
+        grid-template-rows .3s easings.$easeSmooth,
+        border-color .3s easings.$easeSmooth;
+
+    .settingsStatusClip {
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .settingsStatusContent {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 22px;
+        padding: 12px 26px;
+
+        opacity: 0;
+        transform: translateY( 8px );
+        transition:
+            opacity .2s easings.$easeSmooth,
+            transform .3s easings.$easeSmooth;
+    }
+
+    &[ data-shown="true" ] {
+        grid-template-rows: 1fr;
+        border-top-color: colors.alpha( colors.$primary, .15 );
+
+        .settingsStatusContent {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    .hint {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .statusMessage {
+        flex-basis: 100%;
+        color: colors.$primary;
+        font-style: italic;
+        font-weight: 600;
+    }
+}
+
+@media ( max-width: 600px ) {
+    .settingsTopBar {
+        gap: 14px;
+        padding: 14px 18px;
+
+        > .key {
+            display: none;
+        }
+    }
+
+    .settingsTree {
+        padding: 8px 18px;
+    }
+
+    .entryRow {
+        margin-left: 10px;
+        padding-left: 22px;
+        padding-right: 8px;
+    }
+
+    .rangeControl {
+        gap: 10px;
+
+        .rangeBar { width: 70px; }
+        .rangeValue { min-width: 0; }
+    }
+
+    .selectControl .selectValue { min-width: 0; }
+    .textControl input { width: 120px; }
+}
+
+@keyframes settingPop {
+    0%, 30% {
+        scale: 1.06;
+        filter: brightness( 1.4 );
+    }
+}
+
+@keyframes escapeHold {
+    to {
+        transform: scaleX( 1 );
+    }
+}
+
+@keyframes capturePulse {
+    50% {
+        background: colors.alpha( colors.$primary, .25 );
+    }
+}

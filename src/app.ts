@@ -9,10 +9,12 @@ import { DifficultySelectionManager } from './lib/managers/DifficultySelectionMa
 import { SettingsManager } from './lib/managers/SettingsManager.ts'
 import { TestResultsManager } from './lib/managers/TestResultsManager.ts'
 import { KeybindManager } from './lib/managers/KeybindManager.ts'
-import { loadSounds, setChannelVolume, setMasterVolume, sounds } from './lib/audio/sounds.ts'
+import { SettingsPanelManager } from './lib/managers/SettingsPanelManager.ts'
+import { loadSounds, setChannelVolume, setMasterVolume, type SoundChannel, type SoundType, sounds } from './lib/audio/sounds.ts'
 import { layouts } from './lib/tests/layouts/layouts.ts'
 import { dictionaries } from './lib/tests/dictionaries/dictionaries.ts'
 import { syncAppearance } from './lib/settings/appearance.ts'
+import { settingDefinitions } from './lib/settings/definitions.ts'
 import { formatCombo } from './lib/utils/keyCombos.ts'
 
 // import { Debug } from './lib/utils/Debug.ts'
@@ -32,6 +34,14 @@ const testManager = new TestManager(createDictionary())
 const scoreManager = new ScoreManager(progressManager, TestDifficultyEntries.average)
 const difficultySelectionManager = new DifficultySelectionManager(scoreManager)
 const resultsManager = new TestResultsManager()
+
+const settingsPanelManager = new SettingsPanelManager(settingsManager, keybindManager, {
+    // a running test can't be paused, so the panel waits until it's over
+    canOpen: () => !testManager.isRunning(),
+    actions: {
+        'data.resetAll': () => settingsManager.resetAll(),
+    },
+})
 
 const removeLoadingOverlay = () => {
     const loadingOverlay = document.querySelector('#loaderOverlay') as HTMLDivElement
@@ -141,10 +151,57 @@ settingsManager.addListener({
 
 difficultySelectionManager.addListener(difficulty => settingsManager.set('test.difficulty', difficulty.id))
 
+// a volume change previews its own channel, a toggle clicks higher when it turns on, everything else clicks
+const previewSounds: Record<string, { sound: SoundType, channel?: SoundChannel }> = {
+    'audio.master': { sound: 'type' },
+    'audio.typing': { sound: 'type', channel: 'typing' },
+    'audio.interface': { sound: 'select', channel: 'interface' },
+    'audio.results': { sound: 'score_b', channel: 'results' },
+}
+
+const ADJUST_SOUND_INTERVAL = 70
+let lastAdjustSound = 0
+
+settingsPanelManager.addListener({
+    type: 'adjust',
+    exec: id => {
+        // holding an arrow key or dragging a range would otherwise stack the sounds into noise
+        const now = performance.now()
+        if (now - lastAdjustSound < ADJUST_SOUND_INTERVAL) return
+        lastAdjustSound = now
+
+        if (id && settingDefinitions[id].type === 'toggle')
+            return sounds.interact.play(settingsManager.get(id) ? 1.1 : .9)
+
+        const preview = id ? previewSounds[id] : undefined
+        if (!preview) return sounds.select.play()
+
+        // the results sounds only load once the first test starts
+        sounds[preview.sound].load().then(() => sounds[preview.sound].play())
+    }
+})
+
+settingsPanelManager.addListener({
+    type: 'open',
+    exec: () => {
+        inputManager.setEnabled(false)
+        keybindManager.setEnabled(false)
+    }
+})
+
+settingsPanelManager.addListener({
+    type: 'close',
+    exec: () => {
+        inputManager.setEnabled(true)
+        keybindManager.setEnabled(true)
+    }
+})
+
 // --- - - - - - - - ---
 //        INPUT
 // --- - - - - - - - ---
 
+keybindManager.addListener('openSettings', () => settingsPanelManager.open())
 keybindManager.addListener('resetTest', () => resetTest())
 keybindManager.addListener('nextDifficulty', () => difficultySelectionManager.cycleSelectedDifficulty('next'))
 keybindManager.addListener('previousDifficulty', () => difficultySelectionManager.cycleSelectedDifficulty('previous'))

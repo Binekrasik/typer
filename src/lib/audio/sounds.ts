@@ -1,4 +1,4 @@
-export type SoundType = 'type' | 'select' | 'interact' | 'score' | 'score_f' | 'score_d' | 'score_c' | 'score_b' | 'score_a' | 'score_s' | 'score_ss'
+export type SoundType = 'type' | 'tick' | 'select' | 'interact' | 'score' | 'score_f' | 'score_d' | 'score_c' | 'score_b' | 'score_a' | 'score_s' | 'score_ss'
 export type SoundChannel = 'typing' | 'interface' | 'results'
 
 const context = new AudioContext()
@@ -44,14 +44,15 @@ class Sound {
     }
 
     // a sound that hasn't loaded yet is skipped, playing it late would be worse
-    play() {
+    // the rate shifts the pitch too, so one sound can tell apart directions like on and off
+    play(rate = 1) {
         // browsers keep the context suspended until the first click or key press
         if (context.state === 'suspended')
             context.resume()
 
         if (!this.#buffer) return
 
-        const source = new AudioBufferSourceNode(context, { buffer: this.#buffer })
+        const source = new AudioBufferSourceNode(context, { buffer: this.#buffer, playbackRate: rate })
         source.connect(this.#gain)
         source.start()
     }
@@ -60,6 +61,8 @@ class Sound {
 // only the sounds needed before the first test are preloaded
 export const sounds: Record<SoundType, Sound> = {
     type: new Sound('assets/audio/type.webm', 0.2, 'typing', true),
+    // the typing sound for moving around and typing in menus, so it follows the interface volume
+    tick: new Sound('assets/audio/type.webm', 0.2, 'interface', true),
     select: new Sound('assets/audio/select.ogg', 0.2, 'interface', true),
     interact: new Sound('assets/audio/interact.ogg', 0.2, 'interface'),
     score: new Sound('assets/audio/score.ogg', 0.025, 'results'),

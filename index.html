@@ -12,6 +12,10 @@
 
     <style>
         body { background-color: var(--color-background, #000); }
+
+        /* the stylesheet arrives with the app, until then the loader still covers the page and the panel stays hidden */
+        #loaderOverlay { position: fixed; inset: 0; z-index: 1000000; display: flex; justify-content: center; align-items: center; }
+        #settingsOverlay:not([data-open="true"]) { visibility: hidden; }
     </style>
 
     <!-- applies the saved theme before the first paint, src/lib/settings/themes.ts keeps it cached -->
@@ -80,6 +84,30 @@
     </div>
 
     <div id="debugOverlay"></div>
+
+    <div id="settingsOverlay" data-open="false" inert>
+        <div class="settingsPanel" role="dialog" aria-modal="true" aria-label="settings" tabindex="-1" data-zone="search">
+            <div class="settingsTopBar">
+                <div class="settingsTitle"><span>settings</span></div>
+                <label class="settingsSearch">
+                    <input type="text" placeholder="search settings" spellcheck="false" autocomplete="off" aria-label="search settings">
+                </label>
+                <span class="key"><span>esc</span></span>
+            </div>
+
+            <div class="settingsTree" role="tree" aria-label="settings" tabindex="-1">
+                <div class="settingsCursor" data-hidden="true"></div>
+                <div class="settingsEntries"></div>
+                <p class="settingsEmpty" hidden>nothing matches "<span></span>"</p>
+            </div>
+
+            <div class="settingsStatusBar" data-shown="false">
+                <div class="settingsStatusClip">
+                    <div class="settingsStatusContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="app">
         <div id="pageContent">
