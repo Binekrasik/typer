@@ -1,6 +1,19 @@
-export type SoundType = 'type' | 'select' | 'score' | 'score_f' | 'score_d' | 'score_c' | 'score_b' | 'score_a' | 'score_s' | 'score_ss'
+export type SoundType = 'type' | 'select' | 'interact' | 'score' | 'score_f' | 'score_d' | 'score_c' | 'score_b' | 'score_a' | 'score_s' | 'score_ss'
+export type SoundChannel = 'typing' | 'interface' | 'results'
 
 const context = new AudioContext()
+
+// every channel goes through the master gain, so each volume setting scales the sounds under it
+const master = new GainNode(context)
+master.connect(context.destination)
+
+const channels: Record<SoundChannel, GainNode> = {
+    typing: new GainNode(context),
+    interface: new GainNode(context),
+    results: new GainNode(context),
+}
+
+Object.values(channels).forEach(channel => channel.connect(master))
 
 class Sound {
     #src: string
@@ -8,10 +21,10 @@ class Sound {
     #buffer: AudioBuffer | null = null
     #loading: Promise<void> | null = null
 
-    constructor(src: string, volume: number, preload = false) {
+    constructor(src: string, volume: number, channel: SoundChannel, preload = false) {
         this.#src = src
         this.#gain = new GainNode(context, { gain: volume })
-        this.#gain.connect(context.destination)
+        this.#gain.connect(channels[channel])
 
         if (preload) this.load()
     }
@@ -46,16 +59,23 @@ class Sound {
 
 // only the sounds needed before the first test are preloaded
 export const sounds: Record<SoundType, Sound> = {
-    type: new Sound('assets/audio/type.webm', 0.2, true),
-    select: new Sound('assets/audio/select.ogg', 0.2, true),
-    score: new Sound('assets/audio/score.ogg', 0.025),
-    score_f: new Sound('assets/audio/score/f.ogg', 0.2),
-    score_d: new Sound('assets/audio/score/d.ogg', 0.2),
-    score_c: new Sound('assets/audio/score/c.ogg', 0.2),
-    score_b: new Sound('assets/audio/score/b.ogg', 0.2),
-    score_a: new Sound('assets/audio/score/a.ogg', 0.2),
-    score_s: new Sound('assets/audio/score/s.ogg', 0.2),
-    score_ss: new Sound('assets/audio/score/ss_1.ogg', 0.2),
+    type: new Sound('assets/audio/type.webm', 0.2, 'typing', true),
+    select: new Sound('assets/audio/select.ogg', 0.2, 'interface', true),
+    interact: new Sound('assets/audio/interact.ogg', 0.2, 'interface'),
+    score: new Sound('assets/audio/score.ogg', 0.025, 'results'),
+    score_f: new Sound('assets/audio/score/f.ogg', 0.2, 'results'),
+    score_d: new Sound('assets/audio/score/d.ogg', 0.2, 'results'),
+    score_c: new Sound('assets/audio/score/c.ogg', 0.2, 'results'),
+    score_b: new Sound('assets/audio/score/b.ogg', 0.2, 'results'),
+    score_a: new Sound('assets/audio/score/a.ogg', 0.2, 'results'),
+    score_s: new Sound('assets/audio/score/s.ogg', 0.2, 'results'),
+    score_ss: new Sound('assets/audio/score/ss_1.ogg', 0.2, 'results'),
 }
 
 export const loadSounds = () => Object.values(sounds).forEach(sound => sound.load())
+
+// volumes are percentages, squared so the quieter half of a slider isn't all near silence
+const gainOf = (volume: number) => (volume / 100) ** 2
+
+export const setMasterVolume = (volume: number) => master.gain.value = gainOf(volume)
+export const setChannelVolume = (channel: SoundChannel, volume: number) => channels[channel].gain.value = gainOf(volume)
