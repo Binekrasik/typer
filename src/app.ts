@@ -9,7 +9,7 @@ import { TestDifficultyEntries } from './lib/tests/TestDifficultyEntries.ts'
 import { DifficultySelectionManager } from './lib/managers/DifficultySelectionManager.ts'
 import { SettingsManager } from './lib/managers/SettingsManager.ts'
 import { TestResultsManager } from './lib/managers/TestResultsManager.ts'
-import { sounds } from './lib/audio/sounds.ts'
+import { loadSounds, sounds } from './lib/audio/sounds.ts'
 
 // import { Debug } from './lib/utils/Debug.ts'
 
@@ -105,6 +105,9 @@ testManager.addListener({
 
         progressManager.setValue(progressManager.getMaxValue())
         scoreManager.startPenalizer()
+
+        // the results sounds load while the first test is running
+        loadSounds()
     }
 })
 

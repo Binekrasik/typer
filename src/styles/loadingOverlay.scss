@@ -39,7 +39,7 @@
 
     transition: all 1s easings.$easeSmooth;
 
-    img {
+    svg {
         animation: 2.5s easings.$easeAnticipate infinite indicatorSpinner;
     }
 

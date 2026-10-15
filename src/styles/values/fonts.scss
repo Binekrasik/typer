@@ -1,4 +1,36 @@
-@import url( 'https://fonts.googleapis.com/css2?family=Parkinsans:wght@300..800&display=swap' );
-@import url( 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap' );
-@import url( 'https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap' );
-@import url( 'https://fonts.googleapis.com/css2?family=WindSong:wght@400;500&display=swap' );
+// built by fonts/subset.sh, keep the urls in sync with the preloads in index.html
+
+// static regular weight, the writing area doesn't use any other
+@font-face {
+    font-family: 'Parkinsans';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url( '/assets/fonts/parkinsans.woff2' ) format( 'woff2' );
+}
+
+@font-face {
+    font-family: 'Instrument Sans';
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url( '/assets/fonts/instrument-sans.woff2' ) format( 'woff2' );
+}
+
+@font-face {
+    font-family: 'Instrument Sans';
+    font-style: italic;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url( '/assets/fonts/instrument-sans-italic.woff2' ) format( 'woff2' );
+}
+
+// subset to the rank letters (A, B, C, D, F, S), so no unicode-range here:
+// one that excludes U+0020 makes the fallback font set the line's baseline
+@font-face {
+    font-family: 'WindSong';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url( '/assets/fonts/windsong-medium.woff2' ) format( 'woff2' );
+}

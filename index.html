@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
-    <link rel="icon" type="image/svg+xml" href="/assets/icon.svg"/>
+    <!-- empty until there's an icon, stops the browser from requesting a missing one -->
+    <link rel="icon" href="data:,"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" href="/styles/loadingOverlay.css">
+    <!-- the words and the difficulty selection need these on the first screen -->
+    <link rel="preload" href="/assets/fonts/parkinsans.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/instrument-sans-italic.woff2" as="font" type="font/woff2" crossorigin>
     <title>typer</title>
 
     <style>
@@ -59,7 +62,12 @@
     
     <div id="loaderOverlay">
         <div class="loadingIndicator">
-            <img src="/assets/loader.svg" alt="Spinning loading indicator" width="48" height="48">
+            <svg width="48" height="48" viewBox="0 0 64 64" fill="none" role="img" aria-label="Spinning loading indicator">
+                <mask id="loaderMask" fill="#fff">
+                    <path d="M60 32c2.21 0 4.026-1.798 3.75-3.99a32.001 32.001 0 1 0-8.408 25.88c1.51-1.611 1.098-4.133-.69-5.432-1.787-1.298-4.268-.872-5.845.675a24 24 0 1 1 6.86-21.115C56.034 30.197 57.792 32 60 32"/>
+                </mask>
+                <path stroke="#a3f8ce" stroke-width="16" mask="url(#loaderMask)" d="M60 32c2.21 0 4.026-1.798 3.75-3.99a32.001 32.001 0 1 0-8.408 25.88c1.51-1.611 1.098-4.133-.69-5.432-1.787-1.298-4.268-.872-5.845.675a24 24 0 1 1 6.86-21.115C56.034 30.197 57.792 32 60 32Z"/>
+            </svg>
         </div>
     </div>
 
