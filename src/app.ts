@@ -2,23 +2,33 @@ import './styles/app.scss'
 
 import { ProgressBarManager } from './lib/managers/ProgressBarManager.ts'
 import { InputManager } from './lib/managers/InputManager.ts'
-import { TestManager } from './lib/managers/TestManager.ts'
-import { arrayIncludesAny } from './lib/utils/arrays.ts'
+import { type CaretStyle, TestManager } from './lib/managers/TestManager.ts'
 import { ScoreManager } from './lib/managers/ScoreManager.ts'
 import { TestDifficultyEntries } from './lib/tests/TestDifficultyEntries.ts'
 import { DifficultySelectionManager } from './lib/managers/DifficultySelectionManager.ts'
 import { SettingsManager } from './lib/managers/SettingsManager.ts'
 import { TestResultsManager } from './lib/managers/TestResultsManager.ts'
-import { loadSounds, sounds } from './lib/audio/sounds.ts'
+import { KeybindManager } from './lib/managers/KeybindManager.ts'
+import { loadSounds, setChannelVolume, setMasterVolume, sounds } from './lib/audio/sounds.ts'
+import { layouts } from './lib/tests/layouts/layouts.ts'
+import { dictionaries } from './lib/tests/dictionaries/dictionaries.ts'
+import { syncAppearance } from './lib/settings/appearance.ts'
+import { formatCombo } from './lib/utils/keyCombos.ts'
 
 // import { Debug } from './lib/utils/Debug.ts'
 
 let testsCount = 0
 
 const settingsManager = new SettingsManager()
+syncAppearance(settingsManager)
+
+const createLayout = () => layouts[settingsManager.get('keyboard.layout')].create()
+const createDictionary = () => dictionaries[settingsManager.get('test.language')].create(inputManager.getLayout())
+
 const progressManager = new ProgressBarManager()
-const inputManager = new InputManager()
-const testManager = new TestManager(settingsManager, inputManager.getLayout())
+const inputManager = new InputManager(createLayout())
+const keybindManager = new KeybindManager(settingsManager)
+const testManager = new TestManager(createDictionary())
 const scoreManager = new ScoreManager(progressManager, TestDifficultyEntries.average)
 const difficultySelectionManager = new DifficultySelectionManager(scoreManager)
 const resultsManager = new TestResultsManager()
@@ -39,7 +49,7 @@ const resetTest = () => {
 
     difficultySelectionManager.unlockSelection()
     scoreManager.stopPenalizer()
-    testManager.regenerateTest(settingsManager.get('characterCount').value)
+    testManager.regenerateTest(settingsManager.get('test.length'))
     progressManager.reset()
     progressManager.setMaxValue(testManager.getTestLength())
     difficultySelectionManager.syncDifficultyIndicator()
@@ -49,15 +59,95 @@ const resetTest = () => {
     scoreManager.debugScoreProperties()
 }
 
+const syncResetNotice = () => {
+    const combo = settingsManager.get('keybinds.resetTest')
+    const notice = document.querySelector('#testResultsOverlay .resetNotice') as HTMLParagraphElement
+
+    notice.hidden = combo === null;
+    (notice.querySelector('span') as HTMLSpanElement).textContent = formatCombo(combo)
+}
+
+const syncVolumes = () => {
+    setMasterVolume(settingsManager.get('audio.master'))
+    setChannelVolume('typing', settingsManager.get('audio.typing'))
+    setChannelVolume('interface', settingsManager.get('audio.interface'))
+    setChannelVolume('results', settingsManager.get('audio.results'))
+}
+
+syncVolumes()
+syncResetNotice()
+difficultySelectionManager.selectDifficultyById(settingsManager.get('test.difficulty'), false)
+
 // initialize test
 window.onload = () => {
     resetTest()
+    testManager.setCaretStyle(settingsManager.get('appearance.caretStyle') as CaretStyle)
 
     setInterval(() => {
         testManager.syncCaret()
         difficultySelectionManager.syncDifficultyIndicator()
     }, 400)
 }
+
+// --- - - - - - - - ---
+//       SETTINGS
+// --- - - - - - - - ---
+
+settingsManager.addListener({
+    type: 'valuechange',
+    exec: change => {
+        switch (change.id) {
+            case 'keyboard.layout':
+                inputManager.setLayout(createLayout())
+                testManager.changeDictionary(createDictionary())
+                resetTest()
+                break
+
+            case 'test.language':
+                testManager.changeDictionary(createDictionary())
+                resetTest()
+                break
+
+            case 'test.length':
+                resetTest()
+                break
+
+            case 'test.difficulty':
+                difficultySelectionManager.selectDifficultyById(change.value, false)
+                break
+
+            case 'appearance.caretStyle':
+                testManager.setCaretStyle(change.value as CaretStyle)
+                break
+
+            case 'appearance.textSize':
+                testManager.syncCaret()
+                difficultySelectionManager.syncDifficultyIndicator()
+                break
+
+            case 'keybinds.resetTest':
+                syncResetNotice()
+                break
+
+            case 'audio.master':
+            case 'audio.typing':
+            case 'audio.interface':
+            case 'audio.results':
+                syncVolumes()
+                break
+        }
+    }
+})
+
+difficultySelectionManager.addListener(difficulty => settingsManager.set('test.difficulty', difficulty.id))
+
+// --- - - - - - - - ---
+//        INPUT
+// --- - - - - - - - ---
+
+keybindManager.addListener('resetTest', () => resetTest())
+keybindManager.addListener('nextDifficulty', () => difficultySelectionManager.cycleSelectedDifficulty('next'))
+keybindManager.addListener('previousDifficulty', () => difficultySelectionManager.cycleSelectedDifficulty('previous'))
 
 inputManager.addListener('character', character => {
     if (testManager.needsRegenerating()) return
@@ -68,19 +158,6 @@ inputManager.addListener('character', character => {
         scoreManager.updateLastTypedTimestamp()
         progressManager.increaseValue(scoreManager.getRewardValue())
     } else progressManager.decreaseValue(scoreManager.getIncorrectCharacterPenalty())
-})
-
-inputManager.addListener('meta', key => {
-    if (
-        key === 'Backspace'
-        && arrayIncludesAny(inputManager.activeModifierKeys, ['ControlLeft', 'ControlRight'])
-        && arrayIncludesAny(inputManager.activeModifierKeys, ['ShiftLeft', 'ShiftRight'])
-    ) resetTest()
-
-    if (key === 'Tab')
-        if (arrayIncludesAny(inputManager.activeModifierKeys, ['ShiftLeft', 'ShiftRight'])) {
-            difficultySelectionManager.cycleSelectedDifficulty('previous')
-        } else difficultySelectionManager.cycleSelectedDifficulty('next')
 })
 
 progressManager.addListener({
@@ -130,10 +207,10 @@ testManager.addListener({
             rating,
             difficulty: scoreManager.getDifficulty(),
             duration: state.total.test.total / 1000,
-            length: settingsManager.get('characterCount').value,
+            length: settingsManager.get('test.length'),
             speed: 0,
             accuracy: Math.round(state.total.charactersWritten.correct / state.total.charactersWritten.total * 100),
-            username: 'anonymous',
+            username: settingsManager.get('profile.username') || 'anonymous',
         })
 
         /* Debug.setContent(`

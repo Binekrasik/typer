@@ -1,10 +1,7 @@
 import type { Dictionary } from '../tests/dictionaries/Dictionary.ts'
-import { English } from '../tests/dictionaries/english/English.ts'
-import type { Layout } from '../tests/layouts/Layout.ts'
 import { WordEntity } from '../tests/WordEntity.ts'
 import type { TestState } from '../tests/TestState.ts'
 import { arrayYoink } from '../utils/arrays.ts'
-import type { SettingsManager } from './SettingsManager.ts'
 
 // the rest of the test is filled by a single word once it's at most this long
 const EXACT_FIT_LENGTH = 8
@@ -12,6 +9,7 @@ const EXACT_FIT_LENGTH = 8
 const FOLLOWING_WORDS_RESERVE = 3
 
 type TestEventType = 'finish' | 'start' | 'generate'
+export type CaretStyle = 'underline' | 'bar' | 'block'
 type TestEventListenerExec = () => void
 
 interface TestEventListener {
@@ -51,6 +49,7 @@ export class TestManager {
     #listeners: Array<TestEventListener> = []
 
     #caretElement: HTMLDivElement
+    #caretStyle: CaretStyle = 'underline'
 
     // variables modified by test generation
     #writingArea: HTMLDivElement
@@ -58,7 +57,7 @@ export class TestManager {
     #words: Array<WordEntity> = []
     #needsRegenerating: boolean = false
 
-    constructor(settingsManager: SettingsManager, layout: Layout) {
+    constructor(dictionary: Dictionary) {
         // find the writing area
         const areaElement = document.querySelector('#testWritingArea')
         if (!areaElement)
@@ -73,8 +72,7 @@ export class TestManager {
 
         this.#caretElement = caretElement as HTMLDivElement
 
-        // hardcoded default dictionary for now
-        this.#dictionary = new English(layout)
+        this.#dictionary = dictionary
         this.clearTest()
 
         window.addEventListener('resize', () => this.syncCaret({
@@ -87,18 +85,6 @@ export class TestManager {
 
             word.removeAttribute('data-error')
             word.querySelectorAll('[data-error]').forEach(letter => letter.removeAttribute('data-error'))
-        })
-
-        settingsManager.addListener({
-            type: 'valuechange',
-            exec: (value: { id: string, value: any }) => {
-                if (value.id === 'characterCount') {
-                    if (this.#testState.total.test.start !== -1)
-                        this.finishTest(false)
-
-                    this.regenerateTest(value.value)
-                }
-            }
         })
     }
 
@@ -239,9 +225,25 @@ export class TestManager {
             top += element.offsetTop
         }
 
-        this.#caretElement.style.width = `${span.offsetWidth}px`
-        this.#caretElement.style.left = `${left}px`
-        this.#caretElement.style.top = `${top + span.offsetHeight - 3}px`
+        const geometry = {
+            underline: { left, top: top + span.offsetHeight - 3, width: span.offsetWidth, height: null },
+            bar: { left: left - 2, top, width: null, height: span.offsetHeight },
+            block: { left, top, width: span.offsetWidth, height: span.offsetHeight },
+        }[this.#caretStyle]
+
+        // a null size is left to the stylesheet
+        this.#caretElement.style.left = `${geometry.left}px`
+        this.#caretElement.style.top = `${geometry.top}px`
+        this.#caretElement.style.width = geometry.width === null ? '' : `${geometry.width}px`
+        this.#caretElement.style.height = geometry.height === null ? '' : `${geometry.height}px`
+    }
+
+    setCaretStyle(style: CaretStyle) {
+        this.#caretStyle = style
+        this.#caretElement.setAttribute('data-style', style)
+
+        // there's no letter to sit under before the first test is generated
+        if (this.#words.length) this.syncCaret()
     }
 
     advanceCurrentWord() {
@@ -341,6 +343,8 @@ export class TestManager {
     // --- - - - - - - - ---
 
     needsRegenerating = () => this.#needsRegenerating
+    // started and not finished yet
+    isRunning = () => this.#testState.total.test.start !== -1 && !this.#needsRegenerating
     getTestLength = () => this.#testState.total.test.length
     changeDictionary = (dictionary: Dictionary) => this.#dictionary = dictionary
     getTestState = () => this.#testState

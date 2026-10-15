@@ -11,7 +11,7 @@
     #testWritingArea {
         display: flex;
         flex-wrap: wrap;
-        row-gap: 25px;
+        row-gap: calc( 25px * var( --writing-text-scale, 1 ) );
 
         &[ data-visible="false" ] {
             opacity: 0;
@@ -25,7 +25,7 @@
             font-family: 'Parkinsans', Helvetica, sans-serif;
             line-height: 100%;
             font-weight: 400;
-            font-size: 3rem;
+            font-size: calc( 3rem * var( --writing-text-scale, 1 ) );
 
             transition: color .25s easings.$easeSmooth;
             color: colors.alpha( colors.$primary, .25 );
@@ -39,6 +39,15 @@
             }
         }
     }
+}
+
+// the error highlight is cleared when the animation ends, so a still word still needs one
+:root[ data-error-wiggle="false" ] #app #testWritingArea .word[ data-error='true' ] {
+    animation-name: errorStill;
+}
+
+@keyframes errorStill {
+    from, to { transform: none; }
 }
 
 @keyframes errorWiggle {

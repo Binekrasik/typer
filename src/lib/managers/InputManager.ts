@@ -17,6 +17,7 @@ export class InputManager {
     #internalKeyreleaseListener: ((event: KeyboardEvent) => void) | null = null
 
     #activeLayout: Layout
+    #enabled: boolean = true
     readonly activeModifierKeys: Array<string> = []
 
     constructor(layout?: Layout) {
@@ -46,9 +47,12 @@ export class InputManager {
 
         this.#internalKeypressListener = event => {
             if (this.#activeLayout.isModifier(event.code)) {
-                this.activeModifierKeys.push(event.code)
-                event.preventDefault()
-            } else {
+                // modifiers are tracked even while disabled, so none of them stays stuck once enabled again
+                if (!this.activeModifierKeys.includes(event.code))
+                    this.activeModifierKeys.push(event.code)
+
+                if (this.#enabled) event.preventDefault()
+            } else if (this.#enabled) {
                 // call modifier key listeners
                 this.#listeners
                     .filter(listener => listener.type === 'modifier')
@@ -116,4 +120,7 @@ export class InputManager {
 
     getLayout = () => this.#activeLayout
     setLayout = (layout: Layout) => this.#activeLayout = layout
+
+    // while disabled, keys go to the page instead of the test
+    setEnabled = (enabled: boolean) => this.#enabled = enabled
 }

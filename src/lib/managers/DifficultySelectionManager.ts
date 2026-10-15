@@ -2,6 +2,9 @@ import { type TestDifficulty, TestDifficultyEntries } from '../tests/TestDifficu
 import { DifficultyEntity } from '../tests/DifficultyEntity.ts'
 import type { ScoreManager } from './ScoreManager.ts'
 import { sounds } from '../audio/sounds.ts'
+import { arrayYoink } from '../utils/arrays.ts'
+
+type DifficultySelectionListenerExec = (difficulty: TestDifficulty) => void
 
 export class DifficultySelectionManager {
     #selectedDifficulty: TestDifficulty = TestDifficultyEntries.average
@@ -12,6 +15,7 @@ export class DifficultySelectionManager {
     #selectedDifficultyIndex: number = 0
     #scoreManager: ScoreManager
     #locked: boolean = false
+    #listeners: Array<DifficultySelectionListenerExec> = []
 
     constructor(scoreManager: ScoreManager) {
         const unverifiedSelection = document.querySelector('#testDifficultySelection')
@@ -62,6 +66,9 @@ export class DifficultySelectionManager {
         })
     }
 
+    addListener = (listener: DifficultySelectionListenerExec) => this.#listeners.push(listener)
+    removeListener = (listener: DifficultySelectionListenerExec) => arrayYoink(this.#listeners, listener)
+
     syncDifficultyIndicator() {
         const indicatorElement = document.querySelector('#difficultyOptionIndicator') as HTMLDivElement
 
@@ -99,6 +106,14 @@ export class DifficultySelectionManager {
 
         if (playSound !== false)
             sounds.select.play()
+
+        this.#listeners.forEach(listener => listener(this.#selectedDifficulty))
+    }
+
+    selectDifficultyById(id: string, playSound?: boolean) {
+        const index = this.#difficulties.findIndex(difficulty => difficulty.id === id)
+        if (index !== -1 && index !== this.#selectedDifficultyIndex)
+            this.selectDifficulty(index, playSound)
     }
 
     cycleSelectedDifficulty(direction: 'previous' | 'next') {

@@ -13,6 +13,14 @@
     <style>
         body { background-color: var(--color-background, #000); }
     </style>
+
+    <!-- applies the saved theme before the first paint, src/lib/settings/themes.ts keeps it cached -->
+    <script>
+        try {
+            const colors = JSON.parse(localStorage.getItem('typerThemeColors'))
+            for (const property in colors) document.documentElement.style.setProperty(property, colors[property])
+        } catch {}
+    </script>
 </head>
 <body>
     <noscript>

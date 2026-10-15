@@ -12,4 +12,16 @@
     width: 40px;
 
     transition: all .5s easings.$easeSmooth;
+
+    &[ data-style="bar" ] {
+        width: 3px;
+    }
+
+    &[ data-style="block" ] {
+        background: colors.alpha( colors.$primary, .3 );
+    }
+}
+
+:root[ data-smooth-caret="false" ] #testCaret {
+    transition: none;
 }
