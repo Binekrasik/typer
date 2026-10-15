@@ -21,6 +21,21 @@ const physicalKeyRows: Array<{ offset: number, fingers: Array<Array<string>> }> 
     { offset: 1.25, fingers: [['IntlBackslash', 'KeyZ'], ['KeyX'], ['KeyC'], ['KeyV', 'KeyB'], ['KeyN', 'KeyM'], ['Comma'], ['Period'], ['Slash']] },
 ]
 
+const modifierKeys = [
+    'ShiftLeft', 'ShiftRight',
+    'ControlLeft', 'ControlRight',
+    'AltLeft', 'AltRight',
+]
+
+const metaKeys: Record<string, string> = {
+    ['Tab']: 'Tab',
+    ['CapsLock']: 'CapsLock',
+    ['Escape']: 'Escape',
+    ['Backspace']: 'Backspace',
+    ['Enter']: 'Enter',
+    ['NumpadEnter']: 'Enter',
+}
+
 export abstract class Layout {
     #characterPositions: Map<string, KeyPosition> | null = null
 
@@ -32,8 +47,10 @@ export abstract class Layout {
      * @returns `null` when couldn't match
      */
     abstract matchCharacter(code: string, modifiers?: Array<string>): string | null
-    abstract matchMetaKey(code: string): string | null
-    abstract isModifier(code: string): boolean
+
+    // every layout shares the same modifier and meta keys
+    matchMetaKey = (code: string): string | null => metaKeys[code] ?? null
+    isModifier = (code: string) => modifierKeys.includes(code)
 
     /**
      * Finds where the key typing an unmodified `character` physically sits.

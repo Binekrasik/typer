@@ -499,21 +499,6 @@ const characters: CharacterMap = {
     },
 }
 
-const modifiers = [
-    'ShiftLeft', 'ShiftRight',
-    'ControlLeft', 'ControlRight',
-    'AltLeft', 'AltRight',
-]
-
-const metaKeys = {
-    ['Tab']: 'Tab',
-    ['CapsLock']: 'CapsLock',
-    ['Escape']: 'Escape',
-    ['Backspace']: 'Backspace',
-    ['Enter']: 'Enter',
-    ['NumpadEnter']: 'Enter',
-}
-
 export class CzechQwertz extends Layout {
     matchCharacter(code: string, modifiers?: Array<string>) {
         const char = characters[code]
@@ -522,12 +507,4 @@ export class CzechQwertz extends Layout {
 
         return char ? modified ? modified : char.regular : null
     }
-
-    matchMetaKey(code: string) {
-        // @ts-ignore
-        const key = metaKeys[code]
-        return key ? key : null
-    }
-
-    isModifier = (code: string) => modifiers.includes(code)
 }
